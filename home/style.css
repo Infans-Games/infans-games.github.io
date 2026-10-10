@@ -273,3 +273,12 @@ body{background-color:var(--paper);background-image:url("data:image/svg+xml,%3Cs
 .marquee:has(.auto-track){overflow:hidden}
 .marquee .auto-track{width:max-content;overflow:visible;scroll-snap-type:none;padding-inline:0;animation:marquee 90s linear infinite}
 .marquee:hover .auto-track,.marquee:focus-within .auto-track{animation-play-state:paused}
+
+/* 精简玩法介绍：图片只在实机画廊展示一次。 */
+.cards{margin-top:26px}
+.card-body{padding:24px}
+.card h3{font-size:20px}
+.card p{font-size:14px}
+.card::before,.card::after{display:none}
+.card{box-shadow:none;border:1px solid rgba(31,122,102,.22)}
+@media(max-width:640px){.cards{gap:14px}.card-body{padding:18px 20px}.loop{padding-bottom:36px}.shots{padding-top:36px}}
