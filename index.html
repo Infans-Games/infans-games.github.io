@@ -1,211 +1,176 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="zh-CN">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="theme-color" content="#07110f">
-  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
-  <meta name="description" content="Infans Studio is an independent game studio in Shanghai, creating cultivation RPGs and original interactive worlds.">
-  <meta property="og:title" content="Infans Studio · 未孩游戏">
-  <meta property="og:description" content="In a world this vast, mortals still choose their own path.">
-  <meta property="og:type" content="website">
-  <title>Infans Studio · Independent Games</title>
-  <script>document.documentElement.classList.add('js');</script>
-  <link rel="stylesheet" href="css/style.css?v=20260813-1">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <link rel="canonical" href="https://www.ifansstudio.com/">
+  <meta property="og:title" content="未孩游戏工作室 · 辞职修仙传">
+  <meta property="og:description" content="不上班了，去山里修仙。看看最新实机画面，把《辞职修仙传》加入 Steam 愿望单。">
+  <meta property="og:image" content="https://www.ifansstudio.com/home/assets/keyart-1920.webp">
+  <meta property="og:url" content="https://www.ifansstudio.com/">
+  <meta name="theme-color" content="#eaf5fa">
+  <meta name="description" content="未孩游戏工作室 Infans Studio，《辞职修仙传》开发工作室。不上班了，去山里修仙：一款基调轻松的单人 3D 修仙冒险。">
+  <title>未孩游戏工作室 Infans Studio · 辞职修仙传</title>
+  <link rel="icon" href="home/assets/studio-logo.png" type="image/png">
+  <link rel="preload" as="image" href="home/assets/keyart-1920.webp" imagesrcset="home/assets/keyart-1280.webp 1280w, home/assets/keyart-1920.webp 1920w, home/assets/keyart-2560.webp 2560w, home/assets/keyart-3840.webp 3840w" imagesizes="max(100vw, 300svh)">
+  <link rel="stylesheet" href="home/style.css">
 </head>
-<body class="home-page" data-page="home">
-  <a class="skip-link" href="#main-content" data-i18n="common.skip">Skip to main content</a>
+<body>
+  <a class="skip" href="#game">跳到主要内容</a>
 
-  <header class="site-header" id="top">
-    <nav class="site-nav" aria-label="Official site navigation" data-i18n-aria="common.nav.label">
-      <a class="brand" href="#top" aria-label="Infans Studio home" data-i18n-aria="common.brand.home">
-        <span class="brand-seal" aria-hidden="true"><span>未</span></span>
-        <span class="brand-name"><strong>INFANS STUDIO</strong><small>未孩游戏</small></span>
-      </a>
-      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-menu">
-        <span class="sr-only" data-i18n="common.nav.open">Open navigation</span><i></i><i></i>
-      </button>
-      <div class="nav-links" id="site-menu">
-        <a href="#games" data-i18n="common.nav.games">Games</a>
-        <a href="#works" data-i18n="common.nav.works">Other works</a>
-        <a href="#studio" data-i18n="common.nav.studio">Studio</a>
-        <a href="support.html" data-i18n="common.nav.support">Support</a>
-        <div class="language-switcher" role="group" aria-label="Choose language" data-i18n-aria="common.language.label">
-          <button type="button" data-language="zh-CN" lang="zh-CN">中文</button>
-          <button type="button" data-language="en" lang="en">English</button>
-          <button type="button" data-language="ja" lang="ja">日本語</button>
-        </div>
-        <a class="nav-cta" href="/games/resign-to-cultivate/" data-i18n="common.nav.play">Play now</a>
-      </div>
+  <header class="bar" id="bar">
+    <a class="bar-logo" href="#top" aria-label="未孩游戏首页"><img src="home/assets/studio-logo.png" width="1254" height="1254" alt="未孩游戏工作室 Infans Studio"></a>
+    <nav class="bar-nav" aria-label="主导航">
+      <a href="#game">游戏</a>
+      <a href="#shots">画面</a>
+      <a href="#studio">关于未孩</a>
+      <a href="#contact">联系</a>
     </nav>
+    <a class="pill pill-gold bar-steam" data-steam href="https://store.steampowered.com/app/5371020/?l=schinese" target="_blank" rel="noopener">加入 Steam 愿望单</a>
   </header>
 
-  <main id="main-content">
+  <main id="top">
+    <!-- 首屏：Steam 主视觉＋正式字标 -->
     <section class="hero" aria-labelledby="hero-title">
-      <img class="hero-art" src="images/hero-xianmen.jpg" width="1848" height="851" alt="" fetchpriority="high" decoding="async">
-      <canvas class="spirit-canvas" id="spirit-canvas" aria-hidden="true"></canvas>
-      <div class="cloud cloud-one" aria-hidden="true"></div>
-      <div class="cloud cloud-two" aria-hidden="true"></div>
-
-      <div class="hero-inner page-width">
-        <div class="hero-copy" data-reveal>
-          <p class="kicker"><span></span><b data-i18n="home.hero.kicker">Independent game studio · Shanghai</b></p>
-          <h1 id="hero-title"><span data-i18n="home.hero.title1">In a world this vast,</span><em data-i18n="home.hero.title2">mortals still choose their own path.</em></h1>
-          <p class="hero-lead" data-i18n="home.hero.lead">Infans is an independent game studio. We are drawn to the long journeys of cultivation tales—and to the choices people make between gain and loss. We turn those questions into games, one careful step at a time.</p>
-          <div class="hero-actions">
-            <a class="button button-gold" href="/games/resign-to-cultivate/"><span data-i18n="home.hero.play">Play Resign to Cultivate</span><span aria-hidden="true">↗</span></a>
-            <a class="button button-ghost" href="#flagship" data-i18n="home.hero.flagship">Explore Quit to Cultivate</a>
-          </div>
-          <p class="live-note"><i aria-hidden="true"></i><span data-i18n="home.hero.live">Web demo · Mortal Realm available now</span></p>
+      <img class="hero-art" src="home/assets/keyart-1920.webp" srcset="home/assets/keyart-1280.webp 1280w, home/assets/keyart-1920.webp 1920w, home/assets/keyart-2560.webp 2560w, home/assets/keyart-3840.webp 3840w" sizes="max(100vw, 300svh)" width="3840" height="1240" alt="晴天的青绿山水间，背着竹篓的少年修士走在石桥边，远处是瀑布、石峰和洞府" fetchpriority="high">
+      <div class="hero-veil" aria-hidden="true"></div>
+      <div class="petals" aria-hidden="true"><i style="--x:8%;--d:0s;--t:13s;--s:1"></i><i style="--x:19%;--d:-6s;--t:16s;--s:0.8"></i><i style="--x:31%;--d:-3s;--t:12s;--s:1.1"></i><i style="--x:44%;--d:-9s;--t:18s;--s:0.7"></i><i style="--x:57%;--d:-1s;--t:14s;--s:0.9"></i><i style="--x:66%;--d:-12s;--t:17s;--s:1"></i><i style="--x:74%;--d:-5s;--t:13s;--s:0.8"></i><i style="--x:83%;--d:-8s;--t:15s;--s:1.2"></i><i style="--x:91%;--d:-2s;--t:19s;--s:0.9"></i><i style="--x:38%;--d:-14s;--t:16s;--s:0.75"></i></div>
+      <div class="hero-copy">
+        <h1 id="hero-title"><img class="hero-logo" id="hero-logo" src="home/assets/logo-zh.webp" srcset="home/assets/logo-zh.webp 960w, home/assets/logo-zh-1280.webp 1280w" sizes="min(600px, 84vw)" width="1280" height="600" alt="辞职修仙传"></h1>
+        <p class="hero-line">不上班了，去山里修仙。</p>
+        <div class="hero-actions">
+          <a class="pill pill-gold pill-lg" data-steam href="https://store.steampowered.com/app/5371020/?l=schinese" target="_blank" rel="noopener">加入 Steam 愿望单</a>
+          <button type="button" class="pill pill-glass pill-lg" data-trailer><span class="play" aria-hidden="true">▶</span>看实机宣传片</button>
         </div>
-
+        <p class="hero-meta">开发中 · 单人 3D 修仙冒险 · Steam</p>
       </div>
-      <a class="scroll-cue" href="#games"><span data-i18n="home.hero.enter">ENTER</span><i aria-hidden="true"></i></a>
+
+      <!-- 小互动：摸摸猫 -->
+      <button type="button" class="pet" id="pet" aria-label="摸摸猫">
+        <img src="home/assets/shot-cat.jpg" width="400" height="400" alt="">
+        <span class="pet-bubble" id="pet-bubble">摸摸猫</span>
+      </button>
+      <svg class="cloud-edge" viewBox="0 0 1440 90" preserveAspectRatio="none" aria-hidden="true"><path d="M0 90V52c40-18 84-22 118-6 22-30 74-38 104-10 30-24 82-22 104 8 34-20 80-14 98 14 40-34 112-30 136 6 26-22 74-22 96 2 34-28 96-26 118 10 30-22 78-18 98 8 38-30 104-28 126 6 26-20 70-18 92 4 30-26 86-24 108 6 24-16 64-14 82 6 30-20 74-20 96 4 22-14 46-16 64-10V90Z"/></svg>
     </section>
 
-    <section class="web-game section-pad" id="games" aria-labelledby="web-game-title">
-      <img class="web-art" src="images/web-shanshui.jpg" width="1737" height="905" alt="" loading="lazy" decoding="async">
-      <div class="page-width feature-grid">
-        <div class="feature-copy" data-reveal>
-          <p class="section-label" data-i18n="home.web.label">PLAYABLE NOW · WEB GAME</p>
-          <h2 id="web-game-title"><span data-i18n="home.web.title">Resign to Cultivate</span><small data-i18n="home.web.subtitle">Mortal Realm Demo</small></h2>
-          <p class="section-lead" data-i18n="home.web.lead">Begin in a quiet cave dwelling, then venture into the wild to gather herbs, mine ore, and face whatever finds you. Every step consumes lifespan. What you bring home—and when you turn back—is your choice. What one life leaves unfinished may wait for the next.</p>
-          <ul class="tag-list" aria-label="Game features" data-i18n-aria="home.web.features">
-            <li data-i18n="home.web.tag1">Portrait web</li><li data-i18n="home.web.tag2">Grid exploration</li><li data-i18n="home.web.tag3">Auto combat</li><li data-i18n="home.web.tag4">Reincarnation</li>
-          </ul>
-          <a class="button button-jade" href="/games/resign-to-cultivate/"><span data-i18n="home.web.cta">Leave the cave</span><span aria-hidden="true">↗</span></a>
-          <p class="platform-note" data-i18n="home.web.platform">No download · Works on mobile and desktop browsers · Saves stay on this device</p>
-        </div>
-
-        <div class="phone-stage" data-reveal>
-          <div class="game-phone">
-            <span class="phone-speaker" aria-hidden="true"></span>
-            <img src="images/resign-cave-780x1688.png" width="780" height="1688" alt="Resign to Cultivate cave dwelling gameplay" data-i18n-alt="home.web.alt" decoding="async">
-          </div>
-          <p class="screenshot-caption" data-i18n="home.web.caption">Real gameplay · Cave dwelling</p>
-        </div>
-      </div>
-    </section>
-
-    <section class="flagship" id="flagship" aria-labelledby="flagship-title">
-      <img class="flagship-bg" src="images/luoci-cover-home.jpg" width="1600" height="930" alt="" loading="lazy" decoding="async">
-      <div class="flagship-wash" aria-hidden="true"></div>
-      <div class="page-width flagship-inner">
-        <div class="flagship-copy" data-reveal>
-          <p class="section-label" data-i18n="home.flagship.label">PC FLAGSHIP · STEAM</p>
-          <h2 id="flagship-title"><span class="title-main" data-i18n="home.flagship.title">Quit to Cultivate</span><span class="title-sub" data-i18n="home.flagship.subtitle">Mortal Realm</span></h2>
-          <p data-i18n="home.flagship.lead">Our flagship PC cultivation RPG links exploration, combat, and cave management into one journey. Lifespan gives every expedition a cost; reincarnation turns failure into the opening of another life.</p>
-          <div class="flagship-actions">
-            <a class="button button-gold" href="https://store.steampowered.com/app/4532280/_/" target="_blank" rel="noopener noreferrer"><span data-i18n="home.flagship.steam">View on Steam</span><span aria-hidden="true">↗</span></a>
-            <span data-i18n="home.flagship.tags">Roguelite RPG · Expedition & extraction · Cave management</span>
-          </div>
-        </div>
-        <div class="flagship-gallery" data-reveal aria-label="Quit to Cultivate gameplay gallery" data-i18n-aria="home.flagship.gallery">
-          <figure class="flagship-shot flagship-shot-primary">
-            <img src="images/luoci-cave-home.jpg" width="1400" height="878" alt="Quit to Cultivate cave dwelling gameplay" data-i18n-alt="home.flagship.caveAlt" loading="lazy" decoding="async">
-            <figcaption data-i18n="home.flagship.caveCaption">Cave gameplay</figcaption>
-          </figure>
-          <figure class="flagship-shot flagship-shot-secondary">
-            <img src="images/luoci-battle-home.jpg" width="1200" height="675" alt="Quit to Cultivate combat gameplay" data-i18n-alt="home.flagship.battleAlt" loading="lazy" decoding="async">
-            <figcaption data-i18n="home.flagship.battleCaption">Combat gameplay</figcaption>
-          </figure>
-        </div>
-      </div>
-    </section>
-
-    <section class="other-works section-pad" id="works" aria-labelledby="works-title">
-      <div class="page-width">
-        <div class="section-heading" data-reveal>
-          <p class="section-label">OTHER WORLDS</p>
-          <h2 id="works-title" data-i18n-html="home.works.title">Games from<br class="mobile-only-break"> other worlds.</h2>
-          <p data-i18n="home.works.lead">Different themes, the same starting point: make something inviting to play, then give the experience time to stay with you.</p>
-        </div>
-
-        <div class="works-grid">
-          <article class="work-card no-interest-card" data-reveal>
-            <div class="work-media no-interest-media">
-              <img src="games/no-interest/assets/financial-life-bg.jpg" width="1680" height="945" alt="No Interest financial life simulation" data-i18n-alt="home.works.noInterestAlt" loading="lazy" decoding="async">
-              <span class="work-status" data-i18n="home.works.alpha">0.1 Alpha · Public playtest</span>
-              <div class="no-interest-years" aria-hidden="true"><span>1990</span><i></i><span>2024</span></div>
-            </div>
-            <div class="work-copy">
-              <p data-i18n="home.works.noInterestLabel">FINANCIAL LIFE SIMULATION</p>
-              <h3><span data-i18n="home.works.noInterestTitle">No Interest</span><small data-i18n="home.works.noInterestSubtitle">财不理你</small></h3>
-              <span data-i18n="home.works.noInterestLead">Live one financial life through real market cycles. Balance income, spending, cash reserves and investing from 1990 to 2024—using only what your character could have known at the time.</span>
-              <a class="text-link" href="/games/no-interest/"><span data-i18n="home.works.noInterestCta">Play the public alpha</span><span aria-hidden="true">↗</span></a>
-            </div>
+    <!-- 玩法循环：照 Steam 送审文案 -->
+    <span id="games" aria-hidden="true"></span>
+    <section class="loop" id="game" aria-labelledby="loop-title">
+      <div class="wrap">
+        <p class="kicker"><span>辞职修仙传</span></p>
+        <h2 id="loop-title">这一趟，带什么回家？</h2>
+        <p class="lead">离开办公室，走进有灵药、妖兽与石傀儡的世界。<br>野外每一刻都在消耗寿元，洞府里的日子可以慢慢过。</p>
+        <div class="cards">
+          <article class="card">
+            <button type="button" class="card-pic" data-zoom="shot-qingniu.jpg"><img src="home/assets/shot-qingniu.jpg" width="1920" height="1080" alt="青牛峰的洞府、药田与云海全景" loading="lazy"></button>
+            <div class="card-body"><span class="num">01 · 出山</span><h3>寿元在走</h3><p>野外每一刻都在消耗寿元。采药挖矿、雨中垂钓、破解机关，继续走，还是见好就收？</p></div>
           </article>
-
-          <article class="work-card egg-card" data-reveal>
-            <div class="work-media portrait-media">
-              <img src="images/eggjp-home-card.jpg" width="530" height="900" alt="Eggling Japanese home screen gameplay" data-i18n-alt="home.works.eggAlt" loading="lazy" decoding="async">
-              <span class="work-status" data-i18n="home.works.dev">In development</span>
-            </div>
-            <div class="work-copy">
-              <p>LEARNING GAME</p>
-              <h3 data-i18n="home.works.eggTitle">Eggling Japanese</h3>
-              <span data-i18n="home.works.eggLead">Vocabulary, reading, and everyday expressions become part of small games and a gentle progression loop—so learning does not end with memorisation.</span>
-            </div>
+          <article class="card">
+            <button type="button" class="card-pic" data-zoom="shot-shikui.jpg"><img src="home/assets/shot-shikui.jpg" width="1920" height="1080" alt="法相天地与巨大的石傀首领交战" loading="lazy"></button>
+            <div class="card-body"><span class="num">02 · 交手</span><h3>打不过，就回去变强</h3><p>看准出招，走位、闪避、反击。遇上难缠的首领，回洞府换装、炼制、备药，再来试试身手。</p></div>
           </article>
-
-          <article class="work-card heartbeat-card" data-reveal>
-            <div class="work-media portrait-media heartbeat-portrait">
-              <img src="images/heartbeat-gacha.png" width="250" height="423" alt="Heartbeat character interaction gameplay" data-i18n-alt="home.works.heartAlt" loading="lazy" decoding="async">
-              <span class="work-status adult">HTML5 · 18+</span>
-            </div>
-            <div class="work-copy">
-              <p>CHARACTER COLLECTION</p>
-              <h3><span data-i18n="home.works.heartTitle">Heartbeat</span><small data-i18n="home.works.heartSubtitle">Character collection</small></h3>
-              <span data-i18n="home.works.heartLead">One of our earlier complete games, built around character collection, affinity, small games, and conversation—a relationship designed to be encountered more than once.</span>
-            </div>
+          <article class="card">
+            <button type="button" class="card-pic" data-zoom="shot-cat.jpg"><img src="home/assets/shot-cat.jpg" width="1920" height="1080" alt="主角在药田边摸橘白猫" loading="lazy"></button>
+            <div class="card-body"><span class="num">03 · 回府</span><h3>把收获变成底气</h3><p>用草药播种药田，炼丹炼器。洞府里寿元不再流逝，还能偶遇一只猫，停下来摸摸它。</p></div>
           </article>
         </div>
+        <p class="rebirth"><span aria-hidden="true">✦</span>寿元耗尽，便转世重来。仓库、灵石、轮回天赋与洞府都还在。</p>
       </div>
     </section>
 
-    <section class="belief section-pad" id="studio" aria-labelledby="belief-title">
-      <div class="page-width belief-grid">
-        <div class="belief-heading" data-reveal>
-          <p class="section-label">WHAT WE BELIEVE</p>
-          <h2 id="belief-title" data-i18n-html="home.belief.title">A game should leave room<br>for players to find their own way.</h2>
-        </div>
-        <div class="belief-lines">
-          <article data-reveal><span data-i18n="home.belief.choice">Choice</span><p data-i18n="home.belief.choiceLead">A meaningful choice always leaves something behind. Knowing when to press on and when to return is both a mechanic and a measure of character.</p></article>
-          <article data-reveal><span data-i18n="home.belief.growth">Growth</span><p data-i18n="home.belief.growthLead">Numbers may rise, but understanding should deepen too. Learn more about the world, and the next decision ought to change.</p></article>
-          <article data-reveal><span data-i18n="home.belief.rebirth">Rebirth</span><p data-i18n="home.belief.rebirthLead">Beginning again is not returning to zero. What one life gained—and what it regretted—should leave a trace in the next.</p></article>
-        </div>
+    <!-- 实机画面 -->
+    <section class="shots" id="shots" aria-labelledby="shots-title">
+      <div class="wrap shots-head">
+        <div><p class="kicker"><span>实机画面</span></p><h2 id="shots-title">山里的日子</h2></div>
+        <p class="shots-hint">滑动浏览，点一张可以放大</p>
+      </div>
+      <div class="marquee" id="marquee"><div class="track" id="track">
+        <button type="button" class="shot" data-zoom="shot-xuanao.jpg"><img src="home/assets/shot-xuanao.jpg" width="1920" height="1080" alt="玄鳌驮岛首领战，巨兽背上的亭台楼阁" loading="lazy"><span>云海之上，玄鳌驮着一座岛</span></button>
+        <button type="button" class="shot" data-zoom="shot-shikui.jpg"><img src="home/assets/shot-shikui.jpg" width="1920" height="1080" alt="法相天地与巨大的石傀首领交战" loading="lazy"><span>请出法相天地，与石傀正面交锋</span></button>
+        <button type="button" class="shot" data-zoom="shot-molong.jpg"><img src="home/assets/shot-molong.jpg" width="1920" height="1080" alt="画中仙秘境中，墨龙从画卷冲出" loading="lazy"><span>画卷一展，墨龙破卷而出</span></button>
+        <button type="button" class="shot" data-zoom="shot-lantern.jpg"><img src="home/assets/shot-lantern.jpg" width="1920" height="1080" alt="走马灯秘境中的七张剪纸人影" loading="lazy"><span>纸轮一转，满堂剪纸人影站起</span></button>
+        <button type="button" class="shot" data-zoom="shot-lanke.jpg"><img src="home/assets/shot-lanke.jpg" width="1920" height="1080" alt="烂柯秘境中，红叶环绕棋盘" loading="lazy"><span>一局未完，山中已是秋色</span></button>
+        <button type="button" class="shot" data-zoom="shot-qingniu.jpg"><img src="home/assets/shot-qingniu.jpg" width="1920" height="1080" alt="青牛峰的洞府、药田与云海全景" loading="lazy"><span>云海环抱，洞府就是家</span></button>
+        <button type="button" class="shot" data-zoom="shot-atlas.jpg"><img src="home/assets/shot-atlas.jpg" width="1920" height="1080" alt="昆仑山的游戏内舆图" loading="lazy"><span>沿着舆图，走向更远的山河</span></button>
+        <button type="button" class="shot" data-zoom="shot-cat.jpg"><img src="home/assets/shot-cat.jpg" width="1920" height="1080" alt="主角在药田边摸橘白猫" loading="lazy"><span>回到药田旁，摸摸一路相伴的猫</span></button>
+        <button type="button" class="shot" data-zoom="shot-spells.jpg"><img src="home/assets/shot-spells.jpg" width="1920" height="1080" alt="游戏内角色法术配置界面" loading="lazy"><span>这一世，试试另一种打法</span></button>
+      </div></div>
+      <div class="wrap">
+        <button type="button" class="trailer" data-trailer aria-label="播放实机宣传片">
+          <img src="home/assets/trailer-poster.jpg" width="1920" height="1080" alt="" loading="lazy">
+          <span class="trailer-play" aria-hidden="true">▶</span>
+          <span class="trailer-cap">实机宣传片 · 1分46秒</span>
+        </button>
+        <p class="note">以上均为开发中版本的实机画面，正式版本可能变化。</p>
       </div>
     </section>
 
-    <section class="studio-contact" aria-labelledby="contact-title">
-      <div class="page-width contact-inner" data-reveal>
-        <div>
-          <p class="section-label">INFANS STUDIO · SHANGHAI</p>
-          <h2 id="contact-title" data-i18n-html="home.contact.title">We are still making games.<br>The road ahead is long.</h2>
+    <!-- 工作室 -->
+    <section class="studio" id="studio" aria-labelledby="studio-title">
+      <div class="wrap studio-grid">
+        <div class="motto">
+          <h2 id="studio-title">如婴儿之未孩</h2>
+          <p class="motto-src">——《老子》</p>
         </div>
-        <div class="contact-copy">
-          <p data-i18n-html="home.contact.company">Shanghai Infans Digital Technology Co., Ltd.<br><span>上海未孩数字科技有限公司</span></p>
-          <a href="mailto:capoo@ifansstudio.com">capoo@ifansstudio.com</a>
+        <div class="studio-copy">
+          <img class="studio-logo" src="home/assets/studio-logo.png" width="1254" height="1254" alt="未孩游戏工作室 Infans Studio" loading="lazy">
+          <p>未孩游戏工作室位于上海。名字取自《老子》：婴儿还不会笑的时候。</p>
+          <p>我们想留住那份还没长大的好奇，把一个个想法，慢慢做成可以走进去的世界。</p>
         </div>
       </div>
+      <div class="wrap">
+        <h3 class="past-title"><span>这个念头，是怎么长大的</span></h3>
+        <ol class="story">
+          <li class="chapter old">
+            <span class="when">2025 · 冬</span>
+            <figure class="photo tilt-l"><img src="home/assets/old-luoci.webp" width="640" height="372" alt="《裸辞修仙传》早期画面" loading="lazy"></figure>
+            <h4>裸辞修仙传</h4>
+            <p>第一次想：要是裸辞去修仙，会怎样？于是做了一款 2D 修仙游戏，寿元、洞府和轮回，都是从这里开始的。</p>
+          </li>
+          <li class="chapter old">
+            <span class="when">2026 · 夏</span>
+            <figure class="photo tilt-r portrait"><img src="home/assets/old-web-home.webp" width="780" height="1688" alt="《辞职修仙传》网页版首页：水墨山水中的洞府" loading="lazy"></figure>
+            <h4>辞职修仙传 · 网页版</h4>
+            <p>换个样子再试一次：装进手机竖屏，打开浏览器就能玩。从洞府出发，采药、挖矿，再转世。</p>
+            <a class="story-link" href="https://www.ifansstudio.com/games/resign-to-cultivate/" target="_blank" rel="noopener">现在还能玩 ↗</a>
+          </li>
+          <li class="chapter now">
+            <span class="when">现在</span>
+            <figure class="photo tilt-l"><img src="home/assets/shot-qingniu.jpg" width="1280" height="720" alt="《辞职修仙传》青牛峰洞府实机全景" loading="lazy"></figure>
+            <h4>辞职修仙传</h4>
+            <p>同一个念头，长成了一座可以走进去的 3D 山海。</p>
+            <a class="story-badge" href="https://store.steampowered.com/app/5371020/?l=schinese" target="_blank" rel="noopener">加入 Steam 愿望单 ↗</a>
+          </li>
+        </ol>
+        <p class="story-foot">在修仙之前，我们还做过一款角色收集的小游戏<a href="https://capoofun.itch.io/heartbeat" target="_blank" rel="noopener">《心动物语》↗</a></p>
+      </div>
+    </section>
+
+    <!-- 联系 -->
+    <section class="contact" id="contact" aria-labelledby="contact-title">
+      <svg class="cloud-edge top" viewBox="0 0 1440 90" preserveAspectRatio="none" aria-hidden="true"><path d="M0 90V52c40-18 84-22 118-6 22-30 74-38 104-10 30-24 82-22 104 8 34-20 80-14 98 14 40-34 112-30 136 6 26-22 74-22 96 2 34-28 96-26 118 10 30-22 78-18 98 8 38-30 104-28 126 6 26-20 70-18 92 4 30-26 86-24 108 6 24-16 64-14 82 6 30-20 74-20 96 4 22-14 46-16 64-10V90Z"/></svg>
+      <img class="contact-art" src="home/assets/dusk.webp" width="1438" height="810" alt="" loading="lazy">
+      <div class="wrap contact-inner">
+        <h2 id="contact-title">下一段故事，一起写。</h2>
+        <p>发行合作、媒体报道，或是玩过之后的一个想法，都欢迎来信。</p>
+        <a class="mail" href="mailto:capoo@ifansstudio.com">capoo@ifansstudio.com</a>
+        <p class="community">玩家 QQ 群：<strong>2157063076</strong></p>
+        <div class="contact-pills">
+          <a class="pill pill-glass" href="mailto:capoo@ifansstudio.com?subject=%E5%AE%98%E7%BD%91%E6%9D%A5%E4%BF%A1%EF%BD%9C%E5%95%86%E5%8A%A1%E5%90%88%E4%BD%9C">商务合作</a>
+          <a class="pill pill-glass" href="mailto:capoo@ifansstudio.com?subject=%E5%AE%98%E7%BD%91%E6%9D%A5%E4%BF%A1%EF%BD%9C%E7%B4%A2%E5%8F%96%E5%AA%92%E4%BD%93%E8%B5%84%E6%96%99">索取媒体资料</a>
+          <a class="pill pill-glass" href="https://www.ifansstudio.com/support.html" target="_blank" rel="noopener">玩家支持</a>
+        </div>
     </section>
   </main>
 
-  <footer class="studio-footer">
-    <div class="page-width footer-inner">
-      <div><strong>INFANS STUDIO</strong><small data-i18n="common.footer.copyright">© 2026 Shanghai Infans Digital Technology Co., Ltd.</small></div>
-      <nav aria-label="Footer navigation" data-i18n-aria="common.footer.label">
-        <a href="support.html" data-i18n="common.nav.support">Support</a>
-        <a href="privacy.html" data-i18n="common.nav.privacy">Privacy</a>
-        <a href="https://store.steampowered.com/app/4532280/_/" target="_blank" rel="noopener noreferrer">Steam</a>
-        <a href="#top" data-i18n="common.footer.top">Back to top ↑</a>
-      </nav>
+  <footer class="foot">
+    <div class="wrap foot-inner">
+      <span>© 2026 上海未孩数字科技有限公司 · Infans Studio</span>
+      <span class="foot-links"><a href="https://www.ifansstudio.com/privacy.html" target="_blank" rel="noopener">隐私政策</a><a href="https://www.ifansstudio.com/support.html" target="_blank" rel="noopener">玩家支持</a></span>
     </div>
   </footer>
+  <dialog class="viewer" id="viewer"><button type="button" class="viewer-x" data-close aria-label="关闭">×</button><div class="viewer-body" id="viewer-body"></div></dialog>
 
-  <script src="js/i18n.js?v=20260813-1" defer></script>
-  <script src="js/site.js?v=20260813-1" defer></script>
+  <script src="home/main.js" defer></script>
 </body>
 </html>
