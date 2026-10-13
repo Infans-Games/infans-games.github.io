@@ -11,11 +11,17 @@
 
   // 摸摸猫
   const pet = document.getElementById('pet'), bubble = document.getElementById('pet-bubble');
-  const lines = ['喵～', '呼噜呼噜', '再摸一下', '眯眼', '喵！'];
+  const t = key => window.InfansI18n.t(key);
+  const renderPet = () => {
+    if (!pets) { bubble.textContent = t('pet.label'); return; }
+    const line = t(`pet.line${pets < 3 ? (pets - 1) % 5 : pets % 5}`);
+    bubble.textContent = pets < 3 ? line : t('pet.count').replace('{line}', line).replace('{count}', pets);
+  };
   let pets = 0;
+  addEventListener('infans:languagechange', renderPet);
   pet.addEventListener('click', () => {
     pets++;
-    bubble.textContent = pets < 3 ? lines[(pets - 1) % lines.length] : `${lines[pets % lines.length]} · 摸了 ${pets} 次`;
+    renderPet();
     pet.classList.remove('squish'); void pet.offsetWidth; pet.classList.add('squish');
     if (reduce) return;
     const box = pet.getBoundingClientRect(), host = pet.parentElement.getBoundingClientRect();
@@ -67,6 +73,7 @@
     const image = new Image();
     image.src = new URL(button.dataset.zoom, assets);
     image.alt = button.querySelector('img')?.alt || '';
+    image.dataset.i18nAlt = button.querySelector('img')?.dataset.i18nAlt || '';
     open(image);
   });
   document.querySelectorAll('[data-trailer]').forEach(button => button.addEventListener('click', () => {

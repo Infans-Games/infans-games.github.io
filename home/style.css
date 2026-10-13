@@ -282,3 +282,53 @@ body{background-color:var(--paper);background-image:url("data:image/svg+xml,%3Cs
 .card::before,.card::after{display:none}
 .card{box-shadow:none;border:1px solid rgba(31,122,102,.22)}
 @media(max-width:640px){.cards{gap:14px}.card-body{padding:18px 20px}.loop{padding-bottom:36px}.shots{padding-top:36px}}
+
+
+/* Homepage language controls and English text spacing; Chinese art remains unchanged. */
+.language-switch{display:flex;flex:none;gap:2px;padding:3px;border:1px solid rgba(255,255,255,.35);border-radius:99px}
+.language-switch[hidden]{display:none}
+.language-switch button{border:0;border-radius:99px;padding:5px 9px;background:transparent;color:#f6efd6;font-size:12px;line-height:1.5;min-height:32px}
+.language-switch button[aria-pressed="true"]{background:#f6efd6;color:var(--jade-deep);font-weight:700}
+.hero-name{display:none}
+html[lang="en"]{--serif:Georgia,"Times New Roman",serif}
+html[lang="en"] .hero-name{display:block;margin:-12px 16px 12px;font:700 clamp(26px,3vw,38px)/1.2 var(--serif);color:var(--jade-deep);text-shadow:0 2px 12px #fff}
+html[lang="en"] .hero-line,html[lang="en"] .hero-meta,html[lang="en"] .kicker span,html[lang="en"] .num,html[lang="en"] .when,html[lang="en"] .motto h2{letter-spacing:.02em}
+html[lang="en"] .hero-line{padding-inline:16px}
+html[lang="en"] .hero-meta{max-width:calc(100% - 32px)}
+.rebirth [data-i18n]{color:inherit;font-size:inherit}
+html[lang="en"] .shot span{max-width:calc(100% - 28px);line-height:1.5;text-align:left}
+@media(max-width:1100px){.bar{gap:14px}.bar-nav{gap:16px;font-size:14px}}
+@media(max-width:800px){.bar-nav{display:none}.language-switch{margin-left:auto}.bar-steam{margin-left:0}}
+@media(max-width:640px){
+ .bar{gap:8px}
+ .language-switch button{padding:5px 7px;min-height:36px}
+ html[lang="en"] .bar-steam{font-size:11px;padding:9px 10px}
+ html[lang="en"] .hero-name{margin-top:-4px}
+ html[lang="en"] .hero-line{font-size:21px;line-height:1.35;margin-bottom:18px}
+ html[lang="en"] .hero-meta{font-size:12px;letter-spacing:0}
+ html[lang="en"] .motto h2{font-size:38px}
+ html[lang="en"] .story-foot{padding-inline:8px}
+}
+
+
+/* Three website languages. Keep the full Steam action in the hero on narrow screens. */
+.bar-cta-short{display:none}
+.bar-nav a,.bar-steam{white-space:nowrap}
+.bar-steam{flex-shrink:0}
+@media(max-width:1100px){.bar-cta-full{display:none}.bar-cta-short{display:inline}}
+html[lang="ja"]{--serif:"Hiragino Mincho ProN","Yu Mincho","Noto Serif JP",serif}
+html[lang="ja"] .hero-name{display:block;margin:-12px 16px 12px;font:700 clamp(26px,3vw,38px)/1.2 var(--serif);color:var(--jade-deep);text-shadow:0 2px 12px #fff}
+html[lang="ja"] .hero-line,html[lang="ja"] .hero-meta,html[lang="ja"] .kicker span,html[lang="ja"] .num,html[lang="ja"] .when,html[lang="ja"] .motto h2{letter-spacing:.02em}
+html[lang="ja"] .hero-line{padding-inline:16px}
+html[lang="ja"] .hero-meta{max-width:calc(100% - 32px)}
+html[lang="ja"] .shot span{max-width:calc(100% - 28px);line-height:1.5;text-align:left}
+@media(max-width:640px){
+ .bar-cta-full{display:none}
+ .bar-cta-short{display:inline}
+ .bar-steam,html[lang="en"] .bar-steam{font-size:11px;padding:9px}
+ .language-switch button{padding:5px 6px;font-size:12px}
+ html[lang="ja"] .hero-name{margin-top:-4px}
+ html[lang="ja"] .hero-line{font-size:21px;line-height:1.35;margin-bottom:18px}
+ html[lang="ja"] .hero-meta{font-size:12px;letter-spacing:0}
+ html[lang="ja"] .motto h2{font-size:38px}
+}
