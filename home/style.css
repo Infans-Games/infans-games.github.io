@@ -332,3 +332,10 @@ html[lang="ja"] .shot span{max-width:calc(100% - 28px);line-height:1.5;text-alig
  html[lang="ja"] .hero-meta{font-size:12px;letter-spacing:0}
  html[lang="ja"] .motto h2{font-size:38px}
 }
+
+/* 山海经 × 修仙（2026-11-11） */
+.myth{padding-top:8px}
+.myth .card-pic{cursor:zoom-in}
+.myth-stats{font-weight:600}
+@media(max-width:640px){.myth-stats{font-size:13.5px}}
+html[lang="en"] .hero-name{display:none}
