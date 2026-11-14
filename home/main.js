@@ -53,7 +53,7 @@
   const logo = document.getElementById('hero-logo');
   // 日文、英文用英文字标（与 Steam 日文、英文商店页一致），中文用中文字标；日文名另由 hero-name 显示
   const setLogo = () => {
-    const zh = window.InfansI18n.language === 'zh-CN';
+    const zh = window.InfansI18n.language === 'zh-CN'; // 繁中与日、英一样用英文字标，名字由 hero-name 显示
     logo.srcset = zh ? 'home/assets/logo-zh.webp 960w, home/assets/logo-zh-1280.webp 1280w' : 'home/assets/logo-en.webp 960w';
     logo.src = zh ? 'home/assets/logo-zh.webp' : 'home/assets/logo-en.webp';
     logo.width = zh ? 1280 : 960; logo.height = zh ? 600 : 480;
@@ -85,10 +85,9 @@
     open(image);
   });
   document.querySelectorAll('[data-trailer]').forEach(button => button.addEventListener('click', () => {
-    // 日文版没有本站自带的日文字幕片，直接去 Steam 日文商店页看「日本語版トレーラー」
-    if (window.InfansI18n.language === 'ja') { window.open('https://store.steampowered.com/app/5371020/?l=japanese', '_blank', 'noopener'); return; }
+    // 四种语言各播自己的宣传片（trailer-<语言>.mp4）
     const video = document.createElement('video');
-    video.src = new URL('trailer.mp4', assets);
+    video.src = new URL(`trailer-${window.InfansI18n.language}.mp4`, assets);
     video.poster = new URL('trailer-poster.jpg', assets);
     video.controls = true;
     video.playsInline = true;

@@ -320,7 +320,7 @@
   const readStoredLanguage = () => {
     try {
       const stored = window.localStorage.getItem(storageKey);
-      return supportedLanguages.includes(stored) ? stored : 'en';
+      return supportedLanguages.includes(stored) ? stored : stored === 'zh-TW' ? 'zh-CN' : 'en'; // 繁中暂用简中，这两页还没有繁体
     } catch {
       return 'en';
     }
