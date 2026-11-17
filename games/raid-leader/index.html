@@ -1912,6 +1912,9 @@ kbd { display: inline-block; min-width: 22px; padding: 0 6px; text-align: center
 .uf .brkslot .brk { left: 33px; top: 31px; right: auto; width: 18px; height: 18px; }
 .uf .brkslot .brk .ic { width: 18px; height: 18px; }
 
+/* 苹果手机:长按不弹系统菜单、点按不闪灰块、双击不放大、整页不回弹 */
+html, body { -webkit-touch-callout: none; -webkit-tap-highlight-color: transparent; touch-action: manipulation; overscroll-behavior: none; -webkit-text-size-adjust: 100%; }
+
 </style>
 </head>
 <body>
@@ -1978,7 +1981,7 @@ kbd { display: inline-block; min-width: 22px; padding: 0 6px; text-align: center
 
   <div id="overlay"></div>
 </div>
-<script>window.RAID_BUILD = "20261117-1242";window.RAID_TELEMETRY_URL = "https://rtc-telemetry.capoofun.workers.dev/v1/raid-leader/events";</script>
+<script>window.RAID_BUILD = "20261117-1249";window.RAID_TELEMETRY_URL = "https://rtc-telemetry.capoofun.workers.dev/v1/raid-leader/events";</script>
 <script>
 // 数值表:纯数据,不依赖任何运行环境。移植到 Godot 时可直接转成 JSON / Resource。
 var GAME_DATA = {
@@ -10476,11 +10479,20 @@ var SCN = (function () {
   const later = (fn, ms) => { const t = setTimeout(fn, ms); timers.push(t); return t; };
   const clearTimers = () => { timers.forEach(clearTimeout); timers = []; };
 
+  // 手机的刘海和底部横条(安全区)要让开:用一个看不见的探针读出四边要留多少
+  const safeProbe = document.createElement('div');
+  safeProbe.style.cssText = 'position:fixed;left:0;top:0;visibility:hidden;pointer-events:none;padding:env(safe-area-inset-top,0px) env(safe-area-inset-right,0px) env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px)';
+  document.body.appendChild(safeProbe);
   function fit() {
-    const k = Math.min(innerWidth / 1280, innerHeight / 720);
-    stage.style.transform = `translate(-50%,-50%) scale(${k})`;
+    const cs = getComputedStyle(safeProbe), px = v => parseFloat(v) || 0;
+    const sl = px(cs.paddingLeft), sr = px(cs.paddingRight), st = px(cs.paddingTop), sb = px(cs.paddingBottom);
+    const k = Math.min((innerWidth - sl - sr) / 1280, (innerHeight - st - sb) / 720);
+    stage.style.transform = `translate(calc(-50% + ${(sl - sr) / 2}px), calc(-50% + ${(st - sb) / 2}px)) scale(${k})`;
   }
   addEventListener('resize', fit); fit();
+  addEventListener('orientationchange', () => { setTimeout(fit, 120); setTimeout(fit, 500); }); // 苹果手机转屏后尺寸晚一拍才更新
+  if (window.visualViewport) visualViewport.addEventListener('resize', fit);
+  document.addEventListener('gesturestart', e => e.preventDefault()); // 不让双指把整页放大
   function pt(e) { const r = stage.getBoundingClientRect(), k = r.width / 1280; return { x: (e.clientX - r.left) / k, y: (e.clientY - r.top) / k }; }
 
   // ---------- 通用小部件 ----------
