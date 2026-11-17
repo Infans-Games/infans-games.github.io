@@ -1915,6 +1915,16 @@ kbd { display: inline-block; min-width: 22px; padding: 0 6px; text-align: center
 /* 苹果手机:长按不弹系统菜单、点按不闪灰块、双击不放大、整页不回弹 */
 html, body { -webkit-touch-callout: none; -webkit-tap-highlight-color: transparent; touch-action: manipulation; overscroll-behavior: none; -webkit-text-size-adjust: 100%; }
 
+/* 换造型:点详情卡上的人 */
+.detail .dhead .fig { pointer-events: auto; cursor: pointer; } .detail .dhead .fig:hover { filter: brightness(1.15) drop-shadow(0 0 6px rgba(255, 212, 90, .6)); }
+.lkcard { width: 620px; display: flex; gap: 22px; align-items: center; text-align: left; }
+.lkfig { position: relative; width: 190px; height: 247px; flex: none; } .lkfig .dice { position: absolute; right: -4px; bottom: 0; }
+.lkopts { flex: 1; display: flex; flex-direction: column; gap: 12px; } .lkopts .btn { align-self: flex-end; margin-top: 2px; }
+.lkrow { display: flex; gap: 9px; flex-wrap: nowrap; }
+.lksw { width: 32px; height: 32px; border-radius: 50%; border: 3px solid #1a0f08; box-shadow: 0 0 0 1px #5d4320; cursor: pointer; }
+.lksw.on, .lkout.on { box-shadow: 0 0 0 3px #ffd45a, 0 0 10px rgba(255, 212, 90, .6); }
+.lkout { width: 62px; height: 80px; border-radius: 8px; overflow: hidden; background: radial-gradient(#6a5038, #2a1b10); box-shadow: 0 0 0 1px #5d4320; cursor: pointer; } .lkout svg { display: block; width: 100%; height: 100%; }
+
 </style>
 </head>
 <body>
@@ -1981,7 +1991,7 @@ html, body { -webkit-touch-callout: none; -webkit-tap-highlight-color: transpare
 
   <div id="overlay"></div>
 </div>
-<script>window.RAID_BUILD = "20261117-1249";window.RAID_TELEMETRY_URL = "https://rtc-telemetry.capoofun.workers.dev/v1/raid-leader/events";</script>
+<script>window.RAID_BUILD = "20261117-1252";window.RAID_TELEMETRY_URL = "https://rtc-telemetry.capoofun.workers.dev/v1/raid-leader/events";</script>
 <script>
 // 数值表:纯数据,不依赖任何运行环境。移植到 Godot 时可直接转成 JSON / Resource。
 var GAME_DATA = {
@@ -10643,6 +10653,7 @@ var SCN = (function () {
     }
     $('#bPot').onclick = () => { const L = POTS(), cur = g.potionOf(sel); g.setPotion(sel, L[(L.indexOf(cur) + 1) % L.length]); snd('click'); save(); showHub(); };
     $('#page').querySelectorAll('[data-gpick]').forEach(b => { b.onclick = () => showGearPick(selUid, b.dataset.gpick); });
+    { const lf = document.querySelector('.detail .dhead .fig'); if (lf) { lf.dataset.tip = '换造型'; lf.onclick = () => { snd('click'); showLook(sel); }; } }
     $('#bRename').onclick = () => { snd('click'); askName('给' + sel.name + '改名', sel.name, D.names.filter(n => !g.roster.some(h => h.name === n)), v => { sel.name = v; save(); showHub(); }); };
     $('#bRepair').onclick = () => { const r = g.repair(selUid); hubTip(r.ok ? `花了 ${r.cost} 金币,${sel.name}的装备修好了` : r.reason); showHub(); };
     $('#bRepairAll').onclick = () => { const r = g.repairAll(); hubTip(r.ok ? `花了 ${r.cost} 金币,全团装备修好了` : r.reason); showHub(); };
@@ -10813,6 +10824,21 @@ var SCN = (function () {
       const r = g.takeLegend(b.dataset.lgtake, b.dataset.sl);
       if (r.ok) { snd('deny'); save(); close(); hubTip('【' + r.item.name + '】收回仓库了' + (r.line ? ' —— "' + r.line + '"' : '')); }
     }; });
+  }
+  // 换造型:点详情卡上的人。衣服四套、配色、头发、肤色,点一下就换,方便一眼认出要盯着的人
+  function showLook(h) {
+    const ov2 = $('#overlay'), L = h.look || (h.look = { skin: D.looks.skin[0], hair: D.looks.hair[0], accent: D.looks.accent[0], outfit: 0 });
+    const sw = (k, list) => `<div class="lkrow">${list.map((c, i) => `<i class="lksw${L[k] === c ? ' on' : ''}" data-lk="${k}" data-i="${i}" style="background:${c}"></i>`).join('')}</div>`;
+    ov2.className = 'show';
+    ov2.innerHTML = `<div class="card lkcard"><div class="lkfig">${figure(h)}<span class="dice" id="lkDice" data-tip="随机一个">🎲</span></div>
+      <div class="lkopts"><div class="lkrow">${[0, 1, 2, 3].map(i => `<b class="lkout${(L.outfit || 0) === i ? ' on' : ''}" data-out="${i}">${ART.hero(h.cls, Object.assign({}, L, { outfit: i }))}</b>`).join('')}</div>
+      ${sw('accent', D.looks.accent)}${sw('hair', D.looks.hair)}${sw('skin', D.looks.skin)}
+      <div class="btn" id="lkOk">好了</div></div></div>`;
+    const again = () => { snd('click'); save(); showLook(h); };
+    ov2.querySelectorAll('[data-lk]').forEach(e => { e.onclick = () => { L[e.dataset.lk] = D.looks[e.dataset.lk][+e.dataset.i]; again(); }; });
+    ov2.querySelectorAll('[data-out]').forEach(e => { e.onclick = () => { L.outfit = +e.dataset.out; again(); }; });
+    $('#lkDice').onclick = () => { L.skin = pick(D.looks.skin); L.hair = pick(D.looks.hair); L.accent = pick(D.looks.accent); L.outfit = Math.floor(Math.random() * 4); again(); };
+    $('#lkOk').onclick = () => { ov2.className = ''; ov2.innerHTML = ''; showHub(); };
   }
   function askName(title, cur, pool, done, cancel) {
     const ov2 = $('#overlay');
