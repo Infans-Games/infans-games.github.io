@@ -1991,7 +1991,7 @@ html, body { -webkit-touch-callout: none; -webkit-tap-highlight-color: transpare
 
   <div id="overlay"></div>
 </div>
-<script>window.RAID_BUILD = "20261117-1354";window.RAID_TELEMETRY_URL = "https://rtc-telemetry.capoofun.workers.dev/v1/raid-leader/events";</script>
+<script>window.RAID_BUILD = "20261117-1358";window.RAID_TELEMETRY_URL = "https://rtc-telemetry.capoofun.workers.dev/v1/raid-leader/events";</script>
 <script>
 // 数值表:纯数据,不依赖任何运行环境。移植到 Godot 时可直接转成 JSON / Resource。
 var GAME_DATA = {
@@ -3352,11 +3352,11 @@ GAME_DATA.plusRule = { eliteHpK: 0.6, miniGoldK: 0.4, miniDkpK: 0.5, miniMood: 4
 GAME_DATA.enemyBase.totem = { art: 'totem', fig: [60, 96], hp: 9000, size: 56, speed: 0, reach: 0, melee: { interval: 9, dmg: 0 }, script: [{ at: 3, id: 'pulse' }], cycleLen: 3, abilities: { pulse: { kind: 'pulse', name: '脉冲', heal: 3000 } } };
 GAME_DATA.enemyBase.cage = { art: 'cage', fig: [84, 100], hp: 11000, size: 70, speed: 0, reach: 0, melee: { interval: 9, dmg: 0 } };
 // ---------- 难度和规模 ----------
-// 难度 0 普通 / 1 英雄 / 2 史诗。团本三档都有(每个首领开打前可以换);五人本的英雄:heroic5From 级以后的副本在 70 级版本开,更早的副本在 60 级版本(heroicOldCap)开(campaign.js 的 g.heroicLv);五人本没有史诗。
+// 难度 0 普通 / 1 英雄 / 2 史诗。团本三档都有(每个首领开打前可以换);五人本的英雄:70 级才开放——heroic5From 级以后的副本(裂隙、日冕)在 70 级版本开;更早的副本不开英雄(diffRule.heroicOld = false;打开它就会在 heroicOldCap 版本下按那个等级开,数值已按 60 级调过);五人本没有史诗。
 //   英雄和史诗:怪按当前版本上限算,血量和伤害再乘 hp / dmg;首领多技能——机制表里带 diff: 1 的英雄起才有,diff: 2 的史诗才有;史诗的狂暴时间乘 enrageK。
 //   史诗要版本上限到 mythicFromCap 才开(内测没有史诗)。
 // 规模:十人或二十五人,同一批首领同一套技能。二十五人血量乘 hp,平砍和重击乘 tank,点名人数和地上的圈数乘 count(叫出来的小怪数量不变,血量跟着放大);版本上限到 fromCap 才开。
-GAME_DATA.diffRule = { names: ['普通', '英雄', '史诗'], hp: [1, 1.19, 1.1], dmg: [1, 0.93, 0.98], enrageK: [1, 1, 0.95], heroic5From: 60, heroicOldCap: 60, mythicFromCap: 60 }; // heroicOldCap:60 级以前的五人本在这个版本上限下开英雄、按这个等级算
+GAME_DATA.diffRule = { names: ['普通', '英雄', '史诗'], hp: [1, 1.19, 1.1], dmg: [1, 0.93, 0.98], enrageK: [1, 1, 0.95], heroic5From: 60, heroicOldCap: 60, heroicOld: false, mythicFromCap: 60 }; // heroicOld:60 级以前的五人本开不开英雄。用户 2026-11-17 定:英雄本 70 级才开放,所以关掉(只有裂隙、日冕在 70 级版本开英雄); // heroicOldCap:60 级以前的五人本在这个版本上限下开英雄、按这个等级算
 // 编队:各规模建议的坦克 / 治疗人数(其余是输出;只用来提示和"一键补满",不是硬性要求);团本分几个小队、每队几人
 GAME_DATA.formation = { need: { 5: { tank: 1, heal: 1 }, 10: { tank: 2, heal: 3 }, 25: { tank: 3, heal: 6 } }, groups: { 10: 2, 25: 7 }, groupSize: 5 };
 GAME_DATA.sizeRule = { 10: { hp: 1, tank: 1, count: 1, loot: 1 }, 25: { hp: 3.6, tank: 1.15, count: 2.3, loot: 3, fromCap: 60 } }; // loot:每个首领的掉落件数倍数(用户:25 人比 10 人掉得多,难度主要来自要操作的人更多——count 放大点名人数、圈数、小怪数)
@@ -7446,7 +7446,7 @@ const K = D.statK;
     // ---------- 副本 ----------
     // 五人本的英雄:60 级以后的副本(裂隙、日冕)在 70 级版本开、按 70 级算;更早的副本(熔渣到学院)在 60 级版本开、按 60 级算(用户:"60 级版本英雄按 60 级算")。45 级内测没有。
     g.heroicLv = d => (d.min >= D.diffRule.heroic5From ? D.levelCap : D.diffRule.heroicOldCap);
-    g.heroicOpen = d => !d.raid && !!D.heroic.tune[d.id] && g.cap() === g.heroicLv(d) && (g.kills[d.id] || 0) > 0 && g.roster.some(h => h.level >= g.heroicLv(d));
+    g.heroicOpen = d => !d.raid && !!D.heroic.tune[d.id] && (d.min >= D.diffRule.heroic5From || D.diffRule.heroicOld) && g.cap() === g.heroicLv(d) && (g.kills[d.id] || 0) > 0 && g.roster.some(h => h.level >= g.heroicLv(d));
     // 难度:团本三档;n 档开没开(英雄要普通打通过、有人到版本上限;史诗要英雄打通过、版本上限够)
     g.diffOpen = (d, n) => !n || (d.raid ? (n === 1 ? (g.kills[d.id] || 0) > 0 && g.roster.some(h => h.level >= g.cap()) : g.cap() >= D.diffRule.mythicFromCap && (g.hkills[d.id] || 0) > 0) : n === 1 && g.heroicOpen(d));
     g.setDiff = n => { g.diff = n; g.heroic = n > 0; };
