@@ -1991,7 +1991,7 @@ html, body { -webkit-touch-callout: none; -webkit-tap-highlight-color: transpare
 
   <div id="overlay"></div>
 </div>
-<script>window.RAID_BUILD = "20261117-1252";window.RAID_TELEMETRY_URL = "https://rtc-telemetry.capoofun.workers.dev/v1/raid-leader/events";</script>
+<script>window.RAID_BUILD = "20261117-1354";window.RAID_TELEMETRY_URL = "https://rtc-telemetry.capoofun.workers.dev/v1/raid-leader/events";</script>
 <script>
 // 数值表:纯数据,不依赖任何运行环境。移植到 Godot 时可直接转成 JSON / Resource。
 var GAME_DATA = {
@@ -2059,11 +2059,12 @@ var GAME_DATA = {
   dkp: { start: 6, room: 2, boss: 10, price: { green: 3, rare: 8, epic: 20, legend: 50 }, fairK: 0.25, unfairK: 1.8, standby: 0.5 },
   baseMiss: 0.06, // 攻击和法术的基础未命中率,靠装备上的命中等级压下去
   // 英雄难度:70 级后,打通过的五人本可以开英雄模式——怪按 70 级算,只有精英和首领掉装备(70 级紫装),并掉徽章
-  // tune:每个副本英雄版的 [生命倍数, 伤害倍数](在 70 级的基础上),逐个按模拟调的
+  // tune:每个副本英雄版的 [生命倍数, 伤害倍数](在英雄等级 g.heroicLv 的基础上),逐个按模拟调的。
+  // 熔渣到学院的英雄在 60 级版本开、按 60 级算(diffRule.heroicOldCap),这几项是按 60 级、穿枯骨学院紫装的队伍调的;裂隙、日冕按 70 级、穿日冕紫装调
   // 单个首领的微调:敌人 id: [生命倍数, 伤害倍数]。副本那一行的 hpK / dmgK 是按最终首领调的;哪个小首领比最终首领还难,就在这里单独压一压(test/tune.js --minis 自动填)
   bossTune: { sand_boss2: [1, 0.56], emberking_boss5: [1, 0.95] },
   heroic: { badgeBoss: 2, badgeElite: 1, price: 10, shop: 6,
-    tune: { slag: [12.19, 4.42], jail: [8.61, 2.09], serpent: [7.25, 1.57], keep: [6.58, 1.93], abbey: [6.46, 1.74], sand: [6.75, 1.77], forge: [6.16, 1.54], bone: [5.66, 1.36], rift: [5.87, 1.37], sun: [4.26, 1.43] } },
+    tune: { slag: [9.07, 3.35], jail: [6.81, 1.96], serpent: [5.99, 1.46], keep: [5.23, 1.76], abbey: [5.34, 1.18], sand: [5.42, 1.6], forge: [4.84, 1.3], bone: [4.79, 1.29], rift: [5.87, 1.41], sun: [4.26, 1.43] } },
   // 团本里中途下线:每打完一关,每个人有 base 的概率(性格"家里事多"再加)先打招呼,下一关打完就走;走了要从替补里换人
   afk: { base: 0.015 },
   // 替补:团本击杀首领时,等级够却没上场的人士气 -benchMood
@@ -2234,6 +2235,9 @@ var GAME_DATA = {
   // 本来该团长喊的那类大招(cmd)要是没被选中,他自己放:时机到了还要愣 react 秒(再除以性格的技能可靠度),冷却是原来的 cdK 倍;
   // 被打重击时自己开减伤的把握是 wallRel(乘性格的技能可靠度)。所以"选哪个来喊"是有讲究的。
   // 自己放爆发技能时会看仇恨:离 OT 不到 holdThreat 就先压着不放(贪功、热血、上头的人不管这个)
+  // 躲技能的反应:每次站进预警圈,反应时长 = 性格的 ai.dodge ×(1 ± jitter 之间随机),再不低于 floor 秒——
+  // 不会有人同一帧齐刷刷开跑(显得假),会躲的人零点几秒就动身、技能生效前走得出去;慢半拍的晚一秒多才动,不躲的站着不动,团长一眼看得出该拖谁
+  dodge: { jitter: 0.3, floor: 0.3 },
   selfUse: { react: 1.2, cdK: 1.3, wallRel: 0.6, holdThreat: 0.7 },
   // 职业技能:到 firstSkillLevel 级自动学会,不花天赋点(写法:名字、类型、参数、图标底色)
   firstSkillLevel: 10,
@@ -2253,11 +2257,11 @@ var GAME_DATA = {
   //   boom 自爆:死的时候原地亮圈,delay 秒后炸
   trashAb: {
     charge: { kind: 'charge', name: '冲锋', at: 6, cycle: 16, dmg: 420, stun: 1.5, minDist: 170 },
-    pool: { kind: 'selfpool', name: '脚下一滩', at: 10.5, r: 82, delay: 1.5, dur: 10, dps: 300 },
-    cleave: { kind: 'cone', name: '横扫', at: 3, r: 150, half: 0.9, delay: 1.6, dmg: 1000 },
+    pool: { kind: 'selfpool', name: '脚下一滩', at: 10.5, r: 82, delay: 2.0, dur: 10, dps: 300 },
+    cleave: { kind: 'cone', name: '横扫', at: 3, r: 150, half: 0.9, delay: 2.0, dmg: 1000 },
     frenzy: { kind: 'frenzy', name: '狂暴', passive: true, at: 0.3, mult: 1.5 },
     flee: { kind: 'flee', name: '逃跑叫人', passive: true, at: 0.25, dur: 4, n: 2, tid: 'imp' },
-    boom: { kind: 'boom', name: '自爆', passive: true, r: 85, delay: 1.8, dmg: 1100 }
+    boom: { kind: 'boom', name: '自爆', passive: true, r: 85, delay: 2.2, dmg: 1100 }
   },
   trashKit: {
     slag: { brute: ['cleave'] }, jail: { imp: ['charge'], brute: ['cleave'] }, serpent: { imp: ['flee'], brute: ['pool'] },
@@ -2286,7 +2290,7 @@ var GAME_DATA = {
     serpent: [{ id: 'a1', at: 0.2, kind: 'spread', name: '梦魇孢子', r: 78, delay: 4, dmg: 1500, selfK: 0.4 }],
     keep: [{ id: 'a1', at: 0.72, kind: 'line', name: '俯冲', len: 520, w: 96, delay: 2.6, dmg: 2600 }],
     abbey: [{ id: 'a1', at: 0.62, kind: 'beam', name: '净化光束', len: 310, delay: 2.4, dmg: 2300 }],
-    sand: [{ id: 'a1', at: 0.25, kind: 'cone', name: '烈日吐息', r: 330, half: 0.6, delay: 2.5, dmg: 2600 }, { id: 'a2', at: 0.62, kind: 'cone', back: true, name: '甩尾', r: 210, half: 0.8, delay: 1.6, dmg: 2000 }],
+    sand: [{ id: 'a1', at: 0.25, kind: 'cone', name: '烈日吐息', r: 330, half: 0.6, delay: 2.5, dmg: 2600 }, { id: 'a2', at: 0.62, kind: 'cone', back: true, name: '甩尾', r: 210, half: 0.8, delay: 2.4, dmg: 2000 }],
     forge: [{ id: 'a1', at: 0.6, kind: 'nova', name: '锻炉震荡', r: 205, delay: 3, dmg: 2500 }],
     bone: [{ id: 'a1', at: 0.55, kind: 'spread', name: '骨刺新星', r: 78, delay: 4, dmg: 1600, selfK: 0.4 }],
     rift: [{ id: 'a1', at: 0.6, kind: 'line', name: '裂隙冲撞', len: 520, w: 96, delay: 2.5, dmg: 2800 }],
@@ -2723,9 +2727,9 @@ var GAME_DATA = {
   // 每人四个标签,每类一个:combat 手上(战斗习惯)/ loot 眼里(对装备)/ social 嘴上(为人处事)/ life 家里(生活状态)。
   // 每个标签都有好处也有代价。ai 里的进战斗和属性(倍数相乘、概率相加,dodge 只认手上那个);loot 里的管公会里的事(同样相乘 / 相加)。
   // temp 脾气(烈正温负)、up / down 谱系上烈侧 / 温侧的邻居、next 家里标签的人生下一站、stub 倔强程度——引导时用。
-  // ai.dodge: 站在危险区多少秒后自己走开(null = 不到残血绝不挪);ai.ignore: 无视团长走位指令的概率
+  // ai.dodge: 预警出现后多少秒自己动身往外走(反应时长,每次按 D.dodge 抖一抖;null = 不到残血绝不挪)。会躲的 0.45–0.9 秒,慢半拍的 1.7–2 秒(常挨上一下,但别人都走了他还站着,团长看得出来、来得及拖);ai.ignore: 无视团长走位指令的概率
   traits: {
-    steady: { kind: 'combat', name: '稳重', desc: '技能从不掉链子,但躲技能慢半拍', temp: 0, up: 'focus', down: 'obedient', stub: 2, ai: { dodge: 2.2, skillRel: 1.1 },
+    steady: { kind: 'combat', name: '稳重', desc: '技能从不掉链子,但躲技能慢半拍', temp: 0, up: 'focus', down: 'obedient', stub: 2, ai: { dodge: 1.7, skillRel: 1.1 },
       lines: { dodge: ['挪一步。'], wipe: ['我的,没顶住。', '……修装备去吧。'], win: ['收工。'], intro: ['活我会干好,别的不多说。'] } },
     glory: { kind: 'combat', name: '贪功', desc: '输出高一截、专收残血,但抢仇恨、不躲技能、偶尔不听指挥', temp: 2, up: 'berserk', down: 'hot', stub: 3, ai: { dodge: null, power: 1.10, threat: 1.35, ignore: 0.25, ignoreMark: 0.3 },
       lines: { fire: ['再打一下就走!', '这火不疼!'], lowMove: ['好好好,我走我走!'], ignore: ['别拽我,我有分寸!', '我这波爆发呢!'], kickMiss: ['啊,忘断了……', '我以为别人会断!'],
@@ -2734,9 +2738,9 @@ var GAME_DATA = {
       lines: { fire: ['区区地火,等我打完。', '别吵,正忙着。'], lowMove: ['……啧。'], obeyWait: ['等我打完这一下。'], win: ['还算像样。'], wipe: ['我的发挥没有问题。'], intro: ['你们团的水平,配得上我吗?'] } },
     sharp: { kind: 'combat', name: '机灵', desc: '脚下一红就跑,但跑得太勤,输出打九六折', temp: -1, up: 'careful', down: 'timid', stub: 1, ai: { dodge: 0.5, power: 0.96 },
       lines: { dodge: ['溜了溜了!', '脚下!'], win: ['这就完了?我还没热身呢。'], intro: ['我跑得快,死得少。'] } },
-    timid: { kind: 'combat', name: '胆小', desc: '跑得最快、从不踩陷阱,但输出打九三折;治疗残血时先奶自己', temp: -2, up: 'sharp', down: null, stub: 2, ai: { dodge: 0.35, selfFirst: true, derp: 0, power: 0.93 },
+    timid: { kind: 'combat', name: '胆小', desc: '跑得最快、从不踩陷阱,但输出打九三折;治疗残血时先奶自己', temp: -2, up: 'sharp', down: null, stub: 2, ai: { dodge: 0.45, selfFirst: true, derp: 0, power: 0.93 },
       lines: { dodge: ['呀!', '别烧我……'], selfHeal: ['我、我先奶自己一口……'], wipe: ['对不起对不起……'], win: ['大家都没事吧?'], intro: ['我、我会努力不拖后腿的……'] } },
-    slack: { kind: 'combat', name: '划水', desc: '从不抢仇恨、心态稳,但输出打九折,躲技能慢,还老迟到', temp: 0, up: 'slowstart', down: 'steady', stub: 2, ai: { dodge: 2.8, power: 0.9, threat: 0.8 }, loot: { moodK: 0.6 },
+    slack: { kind: 'combat', name: '划水', desc: '从不抢仇恨、心态稳,但输出打九折,躲技能慢,还老迟到', temp: 0, up: 'slowstart', down: 'steady', stub: 2, ai: { dodge: 2.0, power: 0.9, threat: 0.8 }, loot: { moodK: 0.6 },
       lines: { dodge: ['哦,该走了。'], win: ['打完了?我刚才走神了。'], wipe: ['啊?灭了?'], intro: ['我话不多,事也不多。'] } },
     hot: { kind: 'combat', name: '热血', desc: '输出高一截,但容易把怪拉到自己身上,打上头了不躲技能', temp: 1, up: 'glory', down: 'slowstart', stub: 2, ai: { dodge: null, power: 1.08, threat: 1.25 },
       lines: { fire: ['烧不死我!', '这点火算什么!'], lowMove: ['……好烫好烫!'], ot: ['来啊!冲我来!'], dodge: ['让开让开!'], win: ['再来十个!'], wipe: ['再来!这次一定!'], intro: ['哪个副本最难?我要打那个!'] } },
@@ -2757,13 +2761,13 @@ var GAME_DATA = {
       lines: { afkWarn: ['团长,我媳妇喊我了,再打一个我得走。', '孩子醒了……我最多再打一关。'], afkGo: ['实在不好意思,我先下了。'], intro: ['我时间不太固定,能来就来。'] } },
     fair: { kind: 'loot', name: '讲理', desc: '分得对他最服气,但分给不合适的人会当场不高兴', temp: 0, up: 'bis', down: 'hoarder', stub: 2, loot: { fairK: [0.5, 2] },
       lines: { need: ['这件我用得上。'], got: ['谢谢,该我的我不客气。'], lost: ['按规矩来,我没意见。'], gotUnfit: ['这不该给我,团长。'], intro: ['装备按需分配,我只认这个理。'] } },
-    careful: { kind: 'combat', name: '谨慎', desc: '躲技能很及时,但出手保守,输出打九五折', temp: -1, up: 'obedient', down: 'sharp', stub: 1, ai: { dodge: 0.8, power: 0.95 },
+    careful: { kind: 'combat', name: '谨慎', desc: '躲技能很及时,但出手保守,输出打九五折', temp: -1, up: 'obedient', down: 'sharp', stub: 1, ai: { dodge: 0.6, power: 0.95 },
       lines: { dodge: ['小心为上。'], win: ['没出岔子就好。'], wipe: ['我就说要小心……'], intro: ['安全第一,输出第二。'] } },
     berserk: { kind: 'combat', name: '上头', desc: '输出很高,但不躲技能,偶尔叫不动,还爱抢仇恨', temp: 2, up: null, down: 'glory', stub: 3, ai: { dodge: null, power: 1.12, ignore: 0.15, threat: 1.15 },
       lines: { fire: ['烧就烧!我快打死它了!', '不走!就差一点!'], lowMove: ['……行,我退。'], ignore: ['别喊!在输出!'], ot: ['来得好!'], win: ['爽!再来!'], wipe: ['就差一点!!'], intro: ['只要我输出够高,就不需要治疗。'] } },
-    obedient: { kind: 'combat', name: '听话', desc: '团长喊的技能立刻就放、很少失误,但不喊不动,自己躲得慢', temp: -1, up: 'steady', down: 'careful', stub: 1, ai: { dodge: 1.6, skillRel: 1.15, call: 1 },
+    obedient: { kind: 'combat', name: '听话', desc: '团长喊的技能立刻就放、很少失误,但不喊不动,自己躲得慢', temp: -1, up: 'steady', down: 'careful', stub: 1, ai: { dodge: 0.9, skillRel: 1.15, call: 1 },
       lines: { dodge: ['收到,这就走。'], win: ['都是团长指挥得好。'], wipe: ['是我执行得不到位。'], intro: ['团长指哪我打哪。'] } },
-    clumsy: { kind: 'combat', name: '手残', desc: '不争装备,还会慢慢练出来,但打断常按不出来,躲技能也慢', temp: -1, up: 'obedient', down: 'careful', stub: 2, ai: { dodge: 2.0, skillRel: 0.6, learn: 0.05 }, loot: { sulk: 0.6 },
+    clumsy: { kind: 'combat', name: '手残', desc: '不争装备,还会慢慢练出来,但打断常按不出来,躲技能也慢', temp: -1, up: 'obedient', down: 'careful', stub: 2, ai: { dodge: 1.8, skillRel: 0.6, learn: 0.05 }, loot: { sulk: 0.6 },
       lines: { learn: ['我这次断上了!看到没!', '练了一晚上木桩,有用吧?'], kickMiss: ['啊按错键了!', '我按了!真的按了!'], dodge: ['哎哎哎走走走!'], win: ['我这次没拖后腿吧?'], wipe: ['我键盘有点问题……'], intro: ['我……我会练的。'] } },
     focus: { kind: 'combat', name: '专注', desc: '只盯着该打的目标、仇恨很稳,但眼里只有目标,不躲技能', temp: 0, up: 'slowstart', down: 'steady', stub: 2, ai: { dodge: null, threat: 0.85, skillRel: 1.05 },
       lines: { fire: ['嗯?脚下怎么红了。'], lowMove: ['哦,该走了。'], win: ['目标清除。'], intro: ['告诉我打谁就行。'] } },
@@ -2780,9 +2784,9 @@ var GAME_DATA = {
       lines: { need: ['这件值不少钱吧?我要。'], got: ['这能卖……不是,我是说很好用。'], gotUseless: ['那我拿去卖了啊?'], lost: ['亏了亏了。'], intro: ['公会管饭吗?管酒吗?'] } },
 
     // ↓ 第二批加的 22 种。每个标签都是一笔交易:说明统一写成"好处,但代价"
-    curious: { kind: 'combat', name: '好奇', desc: '有他在更容易撞见稀有精英,但地上有什么都想踩一脚', temp: 0, up: 'hot', down: 'sharp', stub: 2, ai: { dodge: 1.0, derp: 3 }, loot: { rareK: 1.5 },
+    curious: { kind: 'combat', name: '好奇', desc: '有他在更容易撞见稀有精英,但地上有什么都想踩一脚', temp: 0, up: 'hot', down: 'sharp', stub: 2, ai: { dodge: 0.7, derp: 3 }, loot: { rareK: 1.5 },
       lines: { derp: ['这个发光的是不是能捡?', '我就摸一下,不会有事的。', '咦,这个机关是干嘛的?'], dodge: ['哦哦,这个不能站。'], rareSpot: ['等等,那边有东西!我就说要多逛逛!'], win: ['刚才那个角落你们看了吗?'], wipe: ['……是不是我碰了什么不该碰的。'], intro: ['你们副本里的箱子都开过吗?真的都开过?'] } },
-    slowstart: { kind: 'combat', name: '慢热', desc: '进了状态谁也拦不住,但开打半分钟才热起来', temp: 0, up: 'hot', down: 'focus', stub: 1, ai: { dodge: 1.4, warm: [20, 0.88, 1.08] },
+    slowstart: { kind: 'combat', name: '慢热', desc: '进了状态谁也拦不住,但开打半分钟才热起来', temp: 0, up: 'hot', down: 'focus', stub: 1, ai: { dodge: 0.8, warm: [20, 0.88, 1.08] },
       lines: { dodge: ['等一下,我挪挪。'], warm: ['来了来了,感觉来了!', '手热了!'], win: ['刚热起来就打完了?'], wipe: ['我还没进状态呢……'], intro: ['先说好,我前两分钟不算数。'] } },
 
     allround: { kind: 'loot', name: '全能', desc: '不对口的武器在他手里也能凑合用,但什么武器都喊需求', temp: 1, up: 'grabby', down: 'miser', stub: 2, loot: { weaponGreed: true, offFit: 0.75 },
@@ -2963,7 +2967,7 @@ var GAME_DATA = {
         { name: '屠夫厨房', tag: '精', elite: true, enemies: ['brute', 'shaman', 'imp'], pos: [[640, 330], [530, 276], [740, 300]], loot: [{ q: 'rare', p: 0.9 }, { q: 'epic', p: 0.1 }] },
         { name: '塔顶露台', tag: '王', boss: true, enemies: ['boss'], pos: [[640, 330]], loot: [{ q: 'epic', p: 1 }, { q: 'rare', p: 1 }, { q: 'legend', p: 0.08 }] }
       ] },
-    { id: 'abbey', trashK: 1.2, extra: ['忏悔回廊', '钟楼'], name: '绯红修院', desc: '一群狂热的修士占据了山中修院,他们觉得谁都需要被"净化"。', min: 28, max: 36, level: 30, size: 5, pal: 'crimson', hpK: 2.3, dmgK: 1.2, goldMult: 2.6,
+    { id: 'abbey', trashK: 1.2, extra: ['忏悔回廊', '钟楼'], name: '绯红修院', desc: '一群狂热的修士占据了山中修院,他们觉得谁都需要被"净化"。', min: 28, max: 36, level: 30, size: 5, pal: 'crimson', hpK: 2.3, dmgK: 1.12, goldMult: 2.6,
       enemies: {
         imp: { base: 'imp', name: '狂热新兵' }, shaman: { base: 'shaman', name: '修院牧师' }, brute: { base: 'brute', name: '圣殿卫士' },
         boss: { base: 'bossCaster', name: '大审判官·维兰', short: '维兰', hp: 250000, phase2At: 0.4, phase2Dmg: 1.25, phase2Speed: 1.35,
@@ -3043,7 +3047,7 @@ var GAME_DATA = {
       ] },
     // ---------- 10 人团队副本 ----------
     // raid: 团队副本,三个首领,中间夹小怪;after: 打通哪个五人本之后开放
-    { id: 'moon', trashK: 1.2, raid: true, after: 'abbey', name: '血月祭坛', desc: '十人团队副本。山谷深处的祭坛每逢血月就会苏醒,三位祭主轮流坐镇。', min: 32, max: 40, level: 34, size: 10, pal: 'night', hpK: 3.94, dmgK: 1.46, goldMult: 5,
+    { id: 'moon', trashK: 1.2, raid: true, after: 'abbey', name: '血月祭坛', desc: '十人团队副本。山谷深处的祭坛每逢血月就会苏醒,三位祭主轮流坐镇。', min: 32, max: 40, level: 34, size: 10, pal: 'night', hpK: 3.94, dmgK: 1.5, goldMult: 5,
       enemies: {
         imp: { base: 'imp', name: '血月信徒' }, shaman: { base: 'shaman', name: '血祭司' }, brute: { base: 'brute', name: '祭坛守卫' },
         boss1: { base: 'bossBrute', name: '祭坛屠夫·格鲁', short: '格鲁', hp: 300000, melee: { interval: 1.8, dmg: 560 },
@@ -3065,7 +3069,7 @@ var GAME_DATA = {
         { name: '王座前厅', tag: '精', elite: true, enemies: ['brute', 'brute', 'shaman', 'imp'], pos: [[570, 330], [720, 330], [640, 262], [800, 300]], loot: [{ q: 'epic', p: 0.5 }, { q: 'rare', p: 1 }] },
         { name: '血月王座', tag: '王', boss: true, enemies: ['boss'], pos: [[640, 330]], loot: [{ q: 'epic', p: 1 }, { q: 'epic', p: 1 }, { q: 'epic', p: 1 }, { q: 'legend', p: 0.3 }] }
       ] },
-    { id: 'emberking', trashK: 1.6, raid: true, after: 'sun', name: '烬王熔窟', desc: '十人团队副本。地心深处,烬王在熔岩里睡了一千年。有人把他吵醒了。', min: 68, max: 70, level: 70, size: 10, pal: 'ash', hpK: 8.03, dmgK: 1.84, goldMult: 8,
+    { id: 'emberking', trashK: 1.6, raid: true, after: 'sun', name: '烬王熔窟', desc: '十人团队副本。地心深处,烬王在熔岩里睡了一千年。有人把他吵醒了。', min: 68, max: 70, level: 70, size: 10, pal: 'ash', hpK: 7.64, dmgK: 1.8, goldMult: 8,
       enemies: {
         imp: { base: 'imp', name: '熔火小鬼' }, shaman: { base: 'shaman', name: '炎语祭司' }, brute: { base: 'brute', name: '熔岩巨人' },
         boss1: { base: 'bossBrute', name: '熔炉巨人·莫格拉', short: '莫格拉', hp: 260000,
@@ -3348,17 +3352,17 @@ GAME_DATA.plusRule = { eliteHpK: 0.6, miniGoldK: 0.4, miniDkpK: 0.5, miniMood: 4
 GAME_DATA.enemyBase.totem = { art: 'totem', fig: [60, 96], hp: 9000, size: 56, speed: 0, reach: 0, melee: { interval: 9, dmg: 0 }, script: [{ at: 3, id: 'pulse' }], cycleLen: 3, abilities: { pulse: { kind: 'pulse', name: '脉冲', heal: 3000 } } };
 GAME_DATA.enemyBase.cage = { art: 'cage', fig: [84, 100], hp: 11000, size: 70, speed: 0, reach: 0, melee: { interval: 9, dmg: 0 } };
 // ---------- 难度和规模 ----------
-// 难度 0 普通 / 1 英雄 / 2 史诗。团本三档都有(每个首领开打前可以换);五人本只有 heroic5From 级以后的副本有英雄(和魔兽一样)。
+// 难度 0 普通 / 1 英雄 / 2 史诗。团本三档都有(每个首领开打前可以换);五人本的英雄:heroic5From 级以后的副本在 70 级版本开,更早的副本在 60 级版本(heroicOldCap)开(campaign.js 的 g.heroicLv);五人本没有史诗。
 //   英雄和史诗:怪按当前版本上限算,血量和伤害再乘 hp / dmg;首领多技能——机制表里带 diff: 1 的英雄起才有,diff: 2 的史诗才有;史诗的狂暴时间乘 enrageK。
 //   史诗要版本上限到 mythicFromCap 才开(内测没有史诗)。
 // 规模:十人或二十五人,同一批首领同一套技能。二十五人血量乘 hp,平砍和重击乘 tank,点名人数和地上的圈数乘 count(叫出来的小怪数量不变,血量跟着放大);版本上限到 fromCap 才开。
-GAME_DATA.diffRule = { names: ['普通', '英雄', '史诗'], hp: [1, 1.19, 1.1], dmg: [1, 0.93, 0.98], enrageK: [1, 1, 0.95], heroic5From: 60, mythicFromCap: 60 };
+GAME_DATA.diffRule = { names: ['普通', '英雄', '史诗'], hp: [1, 1.19, 1.1], dmg: [1, 0.93, 0.98], enrageK: [1, 1, 0.95], heroic5From: 60, heroicOldCap: 60, mythicFromCap: 60 }; // heroicOldCap:60 级以前的五人本在这个版本上限下开英雄、按这个等级算
 // 编队:各规模建议的坦克 / 治疗人数(其余是输出;只用来提示和"一键补满",不是硬性要求);团本分几个小队、每队几人
 GAME_DATA.formation = { need: { 5: { tank: 1, heal: 1 }, 10: { tank: 2, heal: 3 }, 25: { tank: 3, heal: 6 } }, groups: { 10: 2, 25: 7 }, groupSize: 5 };
-GAME_DATA.sizeRule = { 10: { hp: 1, tank: 1, count: 1 }, 25: { hp: 3.6, tank: 1.15, count: 2.3, fromCap: 60 } };
+GAME_DATA.sizeRule = { 10: { hp: 1, tank: 1, count: 1, loot: 1 }, 25: { hp: 3.6, tank: 1.15, count: 2.3, loot: 3, fromCap: 60 } }; // loot:每个首领的掉落件数倍数(用户:25 人比 10 人掉得多,难度主要来自要操作的人更多——count 放大点名人数、圈数、小怪数)
 // 单个团本在某个"规模-难度"下的微调:团本 id: { '10-1': [生命倍数, 伤害倍数], '25-0': … }(10 / 25 人;0 普通、1 英雄、2 史诗)。
 // 上面两张表是全团本通用的倍数;各团本机制不一样,同一个倍数下有的太容易有的打不动,就在这里单独补(test/balance.js fit raid 自动填)
-GAME_DATA.raidTune = { moon: { '10-1': [1, 1.23], '25-0': [0.87, 0.8], '25-1': [1, 0.6] }, emberking: { '10-1': [0.87, 0.86], '10-2': [0.87, 0.86], '25-0': [1, 0.97], '25-1': [0.57, 0.6], '25-2': [0.57, 0.51] }, bell: { '10-1': [1, 1.0], '10-2': [1, 0.99], '25-0': [1, 1.08], '25-1': [0.57, 0.93], '25-2': [0.76, 0.8] }, gear1: { '10-1': [0.87, 1.15], '10-2': [1, 1.01], '25-0': [1, 1.19], '25-1': [0.76, 1.89], '25-2': [0.76, 1.25] }, gear2: { '10-1': [1, 0.88], '10-2': [1, 1.08], '25-0': [0.87, 0.95], '25-1': [0.76, 1.06], '25-2': [0.87, 1.01] }, sky1: { '10-1': [0.87, 0.97], '10-2': [0.87, 0.95], '25-0': [0.87, 1.06], '25-1': [0.76, 0.82], '25-2': [0.76, 0.58] }, sky2: { '10-1': [0.87, 1.12], '10-2': [0.87, 1.06], '25-0': [1, 1.11], '25-1': [0.87, 1.41], '25-2': [0.87, 1.14] } };
+GAME_DATA.raidTune = { moon: { '10-1': [1, 0.99], '25-0': [0.87, 0.88], '25-1': [0.87, 0.48] }, emberking: { '10-1': [0.87, 0.82], '10-2': [0.87, 0.78], '25-0': [1, 1.15], '25-1': [0.5, 0.5], '25-2': [0.57, 0.53] }, bell: { '10-1': [1, 0.91], '10-2': [1, 0.88], '25-0': [1, 1.12], '25-1': [0.66, 0.57], '25-2': [0.76, 0.53] }, gear1: { '10-1': [1, 1], '10-2': [1, 0.97], '25-0': [1.1, 1.75], '25-1': [0.95, 1.5], '25-2': [0.87, 1.25] }, gear2: { '10-1': [0.76, 1.15], '10-2': [0.87, 1.08], '25-0': [0.76, 1.27], '25-1': [0.66, 1.28], '25-2': [0.76, 1.12] }, sky1: { '10-1': [0.87, 0.88], '10-2': [0.87, 0.79], '25-0': [1, 1.06], '25-1': [0.76, 0.83], '25-2': [0.76, 0.66] }, sky2: { '10-1': [0.87, 1.085], '10-2': [1, 0.93], '25-0': [1, 1.22], '25-1': [0.87, 1.48], '25-2': [1, 1.05] } };
 // (花名册上限不再走公会天赋「扩编」,改成按公会等级,见 rosterBase / rosterMax)
 GAME_DATA.rosterCapBy = { 45: 15, 60: 30, 70: 30 }; // 各版本的花名册上限(内测只有十人团)
 // ---------- 团本:按"周"存进度 ----------
@@ -3624,7 +3628,7 @@ GAME_DATA.bossPlus = {
   var P3 = [[560, 320], [640, 290], [720, 320]], P4 = [[540, 320], [620, 290], [700, 262], [760, 320]], PB = [[530, 276], [640, 330], [750, 276]];
   var SUN = { dur: 30, k: 0.3, max: 4, swapAt: 2 };
   D.dungeons.push(
-    { id: 'bell', trashK: 1.4, raid: true, after: 'bone', name: '溺钟海窟', desc: '团队副本。海底沉了一座钟楼,钟每响一次,水就涨一截。', min: 58, max: 60, level: 60, size: 10, pal: 'iron', hpK: 7.14, dmgK: 1.67, goldMult: 7,
+    { id: 'bell', trashK: 1.4, raid: true, after: 'bone', name: '溺钟海窟', desc: '团队副本。海底沉了一座钟楼,钟每响一次,水就涨一截。', min: 58, max: 60, level: 60, size: 10, pal: 'iron', hpK: 6.8, dmgK: 1.67, goldMult: 7,
       enemies: {
         imp: { base: 'imp', name: '溺水的敲钟人' }, shaman: { base: 'shaman', name: '潮汐祭司' }, brute: { base: 'brute', name: '藤壶巨蟹' }, cage: { base: 'cage', name: '锚链笼' }, totem: { base: 'totem', name: '珊瑚芽', abilities: { pulse: { kind: 'pulse', name: '滋长', heal: 2600 } } },
         boss1: { base: 'bossBrute', name: '潮汐看守·藤壶', short: '藤壶', dmgK: 1.15, hp: 310000, melee: { interval: 1.8, dmg: 560 },
@@ -3674,7 +3678,7 @@ GAME_DATA.bossPlus = {
         T('潮汐神龛', ['shaman', 'imp', 'imp', 'shaman'], P4), B('双潮祭台', ['boss5', 'boss5b'], ['_head']),
         E('钟楼底层', ['brute', 'shaman', 'imp'], [[640, 330], [530, 276], [740, 300]]), B('沉钟大殿', ['boss'], ['_armor'], true)
       ] },
-    { id: 'gear1', trashK: 1.4, raid: true, after: 'bell', name: '千机城·上城', desc: '团队副本。一位造物匠把整座城造成了机关。先得过城门、巡城犬、锅炉房和档案馆。', min: 60, max: 60, level: 60, size: 10, pal: 'forge', hpK: 8.91, dmgK: 1.61, goldMult: 8,
+    { id: 'gear1', trashK: 1.4, raid: true, after: 'bell', name: '千机城·上城', desc: '团队副本。一位造物匠把整座城造成了机关。先得过城门、巡城犬、锅炉房和档案馆。', min: 60, max: 60, level: 60, size: 10, pal: 'forge', hpK: 8.36, dmgK: 1.63, goldMult: 8,
       enemies: {
         imp: { base: 'imp', name: '发条工蜂' }, shaman: { base: 'shaman', name: '校准师' }, brute: { base: 'brute', name: '铆钉卫士' },
         boss1: { base: 'bossGolem', name: '城门机关·百臂', short: '百臂', dmgK: 1.2, hp: 310000, melee: { interval: 1.8, dmg: 570 },
@@ -3711,7 +3715,7 @@ GAME_DATA.bossPlus = {
         E('锅炉房走廊', ['brute', 'brute', 'shaman'], [[570, 330], [720, 330], [640, 262]]), B('熔核锅炉房', ['boss3'], ['_legs']),
         T('档案长廊', ['shaman', 'brute', 'shaman'], PB, { hpK: 0.6 }), B('零号档案馆', ['boss'], ['w2', 'w3'], true)
       ] },
-    { id: 'gear2', trashK: 1.4, raid: true, after: 'gear1', name: '千机城·下城', desc: '团队副本。上城只是门面。造物匠把自己也造进了城底的那台机器里。', min: 60, max: 60, level: 60, size: 10, pal: 'forge', hpK: 7.44, dmgK: 1.93, goldMult: 9,
+    { id: 'gear2', trashK: 1.4, raid: true, after: 'gear1', name: '千机城·下城', desc: '团队副本。上城只是门面。造物匠把自己也造进了城底的那台机器里。', min: 60, max: 60, level: 60, size: 10, pal: 'forge', hpK: 9.01, dmgK: 1.67, goldMult: 9,
       enemies: {
         imp: { base: 'imp', name: '废料清运工' }, shaman: { base: 'shaman', name: '图纸祭司' }, brute: { base: 'brute', name: '装配巨臂' }, cage: { base: 'cage', name: '检修舱' }, totem: { base: 'totem', name: '自动炮台', abilities: { pulse: { kind: 'pulse', name: '炮击', dmg: 380 } } },
         boss1: { base: 'bossBrute', name: '试验品·无名', short: '无名', dmgK: 1.2, hp: 270000, melee: { interval: 1.7, dmg: 560 }, enrageAt: 210,
@@ -3767,14 +3771,14 @@ GAME_DATA.bossPlus = {
   var P3 = [[560, 320], [640, 290], [720, 320]], P4 = [[540, 320], [620, 290], [700, 262], [760, 320]], PB = [[530, 276], [640, 330], [750, 276]], PE = [[570, 330], [720, 330], [640, 262]];
   var SUN = { dur: 30, k: 0.3, max: 4, swapAt: 2 };
   D.dungeons.push(
-    { id: 'sky1', trashK: 1.6, raid: true, after: 'emberking', name: '天外回廊·星桥', desc: '团队副本。日冕高台把太阳拉近之后,天上开了一条走廊。桥的那一头有东西在往这边看。', min: 70, max: 70, level: 70, size: 10, pal: 'void', hpK: 9.82, dmgK: 1.58, goldMult: 10,
+    { id: 'sky1', trashK: 1.6, raid: true, after: 'emberking', name: '天外回廊·星桥', desc: '团队副本。日冕高台把太阳拉近之后,天上开了一条走廊。桥的那一头有东西在往这边看。', min: 70, max: 70, level: 70, size: 10, pal: 'void', hpK: 9.58, dmgK: 1.62, goldMult: 10,
       enemies: {
         imp: { base: 'imp', name: '星屑游魂' }, shaman: { base: 'shaman', name: '观星者' }, brute: { base: 'brute', name: '陨铁守卫' }, whelp: { base: 'imp', name: '星鳞幼龙', hp: 15000 },
         boss1: { base: 'bossGolem', name: '星鳞母龙·薇拉', short: '薇拉', dmgK: 1.15, hp: 205000, melee: { interval: 1.8, dmg: 600 },
           script: [{ at: 6, id: 'smash' }], cycleLen: 40,
           abilities: { smash: { kind: 'buster', name: '龙爪', cast: 2.3, dmg: 5200 } },
           mech: [{ id: 'm1', at: 0.5, kind: 'airphase', name: '起飞', dur: 6, count: 3, r: 70, delay: 2.6, dmg: 2600 }, { id: 'm2', at: 0.7, kind: 'summon', name: '幼龙破壳', tid: 'whelp', n: 3 }, { id: 'h2', diff: 2, at: 0.9, kind: 'fixate', name: '护崽', dur: 7, mult: 1.6 }],
-          area: [{ id: 'a1', at: 0.22, kind: 'cone', name: '深呼吸', r: 360, half: 0.75, delay: 3, dmg: 2900 }, { id: 'a2', at: 0.36, kind: 'cone', back: true, name: '甩尾', r: 220, half: 0.8, delay: 1.6, dmg: 2200 }, { id: 'h1', diff: 1, at: 0.82, kind: 'knock', name: '振翅', r: 205, dist: 180, delay: 2.8, dmg: 1900 }],
+          area: [{ id: 'a1', at: 0.22, kind: 'cone', name: '深呼吸', r: 360, half: 0.75, delay: 3, dmg: 2900 }, { id: 'a2', at: 0.36, kind: 'cone', back: true, name: '甩尾', r: 220, half: 0.8, delay: 2.4, dmg: 2200 }, { id: 'h1', diff: 1, at: 0.82, kind: 'knock', name: '振翅', r: 205, dist: 180, delay: 2.8, dmg: 1900 }],
           yell: { pull: ['谁碰了我的蛋?', '这座桥,是我的巢。'], mid: ['孩子们,醒醒。'], enrage: ['把你们烧成星尘!'] } },
         boss2: { base: 'bossCaster', name: '引力之眼', short: '引力之眼', dmgK: 1.15, hp: 285000, melee: { interval: 2.0, dmg: 560, ranged: true },
           script: [{ at: 6, id: 'storm' }], cycleLen: 38,
@@ -3804,7 +3808,7 @@ GAME_DATA.bossPlus = {
         E('陨铁长廊', ['brute', 'brute', 'shaman'], PE), B('晨昏线', ['boss3', 'boss3b'], ['_legs']),
         T('星屑滩', ['shaman', 'brute', 'shaman'], PB, { hpK: 0.6 }), B('陨星坑', ['boss'], ['w2', 'w3'], true)
       ] },
-    { id: 'sky2', trashK: 1.6, raid: true, after: 'sky1', name: '天外回廊·天顶', desc: '团队副本。走廊的尽头没有门,只有一个一直在看着这边的东西。', min: 70, max: 70, level: 70, size: 10, pal: 'sun', hpK: 11.13, dmgK: 1.55, goldMult: 12,
+    { id: 'sky2', trashK: 1.6, raid: true, after: 'sky1', name: '天外回廊·天顶', desc: '团队副本。走廊的尽头没有门,只有一个一直在看着这边的东西。', min: 70, max: 70, level: 70, size: 10, pal: 'sun', hpK: 10.87, dmgK: 1.65, goldMult: 12,
       enemies: {
         imp: { base: 'imp', name: '失重的侍从' }, shaman: { base: 'shaman', name: '天顶司仪' }, brute: { base: 'brute', name: '星盘卫士' }, cage: { base: 'cage', name: '货舱' },
         boss1: { base: 'bossCaster', name: '守门星灵·缄默', short: '缄默', dmgK: 1.1, hp: 290000, melee: { interval: 2.0, dmg: 580, ranged: true },
@@ -3990,7 +3994,7 @@ GAME_DATA.uniques = {
   D.dungeons.forEach(function (d) {
     tiers.push({ id: d.id, tier: G.tier[d.id], lv: d.max >= D.levelCap ? D.levelCap : Math.min(D.levelCap, d.level + (d.raid ? G.raidBonus : 0)), req: d.min, quals: ['green', 'rare', 'epic'], legend: true }); // 满级副本出的就是 70 级装备
     var base = tiers[tiers.length - 1];
-    if (!d.raid) tiers.push({ id: d.id + '_h', base: d.id, diff: 1, size: 5, tier: G.tier[d.id], lv: D.levelCap + GT.heroic5Lv, req: D.levelCap, quals: ['epic'], legend: false }); // 五人本英雄
+    if (!d.raid) tiers.push({ id: d.id + '_h', base: d.id, diff: 1, size: 5, tier: G.tier[d.id], lv: (d.min >= D.diffRule.heroic5From ? D.levelCap : D.diffRule.heroicOldCap) + GT.heroic5Lv, req: d.min >= D.diffRule.heroic5From ? D.levelCap : D.diffRule.heroicOldCap, quals: ['epic'], legend: false }); // 五人本英雄(60 级以前的副本按 60 级版本算)
     else [10, 25].forEach(function (size) { [0, 1, 2].forEach(function (diff) { // 团本:十人 / 二十五人 × 普通 / 英雄 / 史诗
       if (size === 10 && !diff) return;
       tiers.push({ id: d.id + '.' + (size === 25 ? '25' : '') + ['', 'h', 'm'][diff], base: d.id, diff: diff, size: size, tier: G.tier[d.id], lv: base.lv + GT.diffLv[diff] + (size === 25 ? GT.size25Lv : 0), req: diff ? verCap(d) : d.min, quals: ['epic'], legend: false });
@@ -5963,11 +5967,13 @@ if (typeof module !== 'undefined') module.exports = GAME_DATA;
       const z = inDanger(h.pos, 6, h);
       const capMove = h.dest && h.dest.kind === 'cap';
       if (z && !capMove && !h.order && !h.still) {
-        h.dangerT += dt;
         const can = h.ai.dodge != null;
+        if (h.dangerT === 0 && can) { const DG = D.dodge; h.dodgeAt = Math.max(DG.floor, h.ai.dodge * (1 - DG.jitter + 2 * DG.jitter * rng())); } // 这一下多久反应过来:每次都抖一抖
+        h.dangerT += dt;
         const low = h.hp / h.maxHp < 0.4 && z.state === 'pool';
-        if (!h.fleeing && (can ? h.dangerT >= h.ai.dodge : low)) {
-          const sp = melee && tgt ? meleeSpot(h, tgt) : safeSpot(h.pos, h);
+        if (!h.fleeing && (can ? h.dangerT >= h.dodgeAt : low)) {
+          let sp = melee && tgt ? meleeSpot(h, tgt) : null;
+          if (!sp || inDanger(sp, 6, h)) sp = safeSpot(h.pos, h); // 近战围着怪找不到安全的位置(比如以首领为圆心的震地):先跑出圈再说
           if (sp) { h.dest = { x: sp.x, y: sp.y, kind: 'flee' }; h.fleeing = true; h.hold = 0; say(h, can ? 'dodge' : 'lowMove'); }
         } else if (!can && !h.fleeing && h.dangerT > 0.6) say(h, 'fire');
       } else if (!z) { h.dangerT = 0; h.fleeing = false; }
@@ -5981,7 +5987,7 @@ if (typeof module !== 'undefined') module.exports = GAME_DATA;
       }
       // 近战自己贴上去
       if (melee && tgt && h.hold <= 0 && !capMove && !h.still && !h.fixBy && !(h.dest && h.dest.kind === 'flee')) {
-        if (dist(h.pos, tgt.pos) > reach(tgt) + 6) { const sp = meleeSpot(h, tgt); h.dest = { x: sp.x, y: sp.y, kind: 'melee' }; }
+        if (dist(h.pos, tgt.pos) > reach(tgt) + 6) { const sp = meleeSpot(h, tgt); if (!inDanger(sp, 6, h) || inDanger(h.pos, 6, h)) h.dest = { x: sp.x, y: sp.y, kind: 'melee' }; } // 怪身边全在预警圈里:先在圈外等它炸完再贴回去
         else if (h.dest && h.dest.kind === 'melee') h.dest = null;
         else if (h.m.backstab && !h.m.frontOk && !h.dest && tgt.target && tgt.target !== h.id && !behind(h, tgt) && s.t >= (h.bsT || 0)) { h.bsT = s.t + 2.5; const sp = meleeSpot(h, tgt); h.dest = { x: sp.x, y: sp.y, kind: 'melee' }; } // 绕到背后去
       }
@@ -6277,6 +6283,7 @@ if (typeof module !== 'undefined') module.exports = GAME_DATA;
     s.drain = function () { const e = ev; ev = []; return e; };
     s.safeSpot = safeSpot;
     s.inDanger = inDanger;
+    s.inZone = inZone;
     return s;
   }
 
@@ -7437,7 +7444,9 @@ const K = D.statK;
     };
 
     // ---------- 副本 ----------
-    g.heroicOpen = d => !d.raid && d.min >= D.diffRule.heroic5From && (g.kills[d.id] || 0) > 0 && g.roster.some(h => h.level >= D.levelCap); // 五人本的英雄:只有 60 级以后的副本有
+    // 五人本的英雄:60 级以后的副本(裂隙、日冕)在 70 级版本开、按 70 级算;更早的副本(熔渣到学院)在 60 级版本开、按 60 级算(用户:"60 级版本英雄按 60 级算")。45 级内测没有。
+    g.heroicLv = d => (d.min >= D.diffRule.heroic5From ? D.levelCap : D.diffRule.heroicOldCap);
+    g.heroicOpen = d => !d.raid && !!D.heroic.tune[d.id] && g.cap() === g.heroicLv(d) && (g.kills[d.id] || 0) > 0 && g.roster.some(h => h.level >= g.heroicLv(d));
     // 难度:团本三档;n 档开没开(英雄要普通打通过、有人到版本上限;史诗要英雄打通过、版本上限够)
     g.diffOpen = (d, n) => !n || (d.raid ? (n === 1 ? (g.kills[d.id] || 0) > 0 && g.roster.some(h => h.level >= g.cap()) : g.cap() >= D.diffRule.mythicFromCap && (g.hkills[d.id] || 0) > 0) : n === 1 && g.heroicOpen(d));
     g.setDiff = n => { g.diff = n; g.heroic = n > 0; };
@@ -7474,7 +7483,7 @@ const K = D.statK;
     // 敌人强度:副本等级的成长倍数 × 副本为几人队设计的系数
     g.enemyScale = d => {
       const n = g.diffN(), R = D.diffRule, trash = d.trashK || D.trashHpK, NS = D.numScale; // NS:全局的数字量级,队员和怪一起乘
-      if (!d.raid) return n ? { hp: LS(D.levelCap) * D.heroic.tune[d.id][0] * NS, dmg: LS(D.levelCap) * D.heroic.tune[d.id][1] * NS, trash } : { hp: LS(d.level) * d.hpK * NS, dmg: LS(d.level) * d.dmgK * NS, trash };
+      if (!d.raid) return n ? { hp: LS(g.heroicLv(d)) * D.heroic.tune[d.id][0] * NS, dmg: LS(g.heroicLv(d)) * D.heroic.tune[d.id][1] * NS, trash } : { hp: LS(d.level) * d.hpK * NS, dmg: LS(d.level) * d.dmgK * NS, trash };
       const lv = n ? g.cap() : d.level, Z = D.sizeRule[g.raidSize(d)]; // 团本:英雄和史诗按版本上限算,再乘难度和规模
       const T = (D.raidTune[d.id] || {})[g.raidSize(d) + '-' + n] || [1, 1]; // 这个团本在这个规模和难度下的单独微调
       return { hp: LS(lv) * d.hpK * R.hp[n] * Z.hp * T[0] * NS, dmg: LS(lv) * d.dmgK * R.dmg[n] * T[1] * NS, trash, tank: Z.tank, count: Z.count, enrageK: R.enrageK[n] };
@@ -7601,14 +7610,16 @@ const K = D.statK;
         if (k > 0) g.roster.forEach(h => { if (ph.indexOf(h) < 0 && !g.busy(h.uid) && h.level < g.cap()) addXp(h, Math.round(baseXp * k * g.xpMult(h, d)), []); }); } // 替补升级不在战斗里播报
       ph.forEach(h => {
         if (h.level >= g.cap()) return;
-        h.xp += Math.round(baseXp * g.xpMult(h, g.heroic ? { level: d.raid ? g.cap() : D.levelCap, max: d.raid ? g.cap() : D.levelCap } : d) * (1 + g.gt('mentor')) * (lootMods(h).xpK || 1) * (1 + mentorOf(h)) * (1 + g.gearFx(h, 'xpK')));
+        h.xp += Math.round(baseXp * g.xpMult(h, g.heroic ? { level: d.raid ? g.cap() : g.heroicLv(d), max: d.raid ? g.cap() : g.heroicLv(d) } : d) * (1 + g.gt('mentor')) * (lootMods(h).xpK || 1) * (1 + mentorOf(h)) * (1 + g.gearFx(h, 'xpK')));
         while (h.xp >= xpNeed(h) && h.level < g.cap()) { h.xp -= xpNeed(h); h.level++; levelups.push({ uid: h.uid, level: h.level, point: h.level >= D.talentFromLevel, learn: h.level === D.firstSkillLevel ? cls(h).firstSkill.name : null }); }
       });
       if (last && d === D.dungeons[0]) ph.forEach(h => { while (h.level < D.talentFromLevel && h.level < g.cap()) { h.level++; h.xp = 0; levelups.push({ uid: h.uid, level: h.level, point: h.level >= D.talentFromLevel, learn: h.level === D.firstSkillLevel ? cls(h).firstSkill.name : null }); } }); // 教学本保底:打通就到 10 级
       const drops = []; let tokN = 0;
       const noSet = pool => (d.raid ? pool.filter(k => !D.items[k].set) : pool); // 团本的套装件只能用纹章换,不直接掉
       const uniqueOf = () => D.items[g.gearKey(d) + '_legend_trinket'] || D.items[d.id + '_legend_trinket']; // 这个副本的首领专属饰品(当前这一档的)
-      room.loot.concat(rng() < g.perkValue('finder') / 100 ? [{ q: room.loot[0].q, p: 1 }] : []).forEach(l => {
+      const LK = d.raid ? D.sizeRule[g.raidSize(d)].loot || 1 : 1, rolls = []; // 二十五人团掉得多:每一项掉 LK 份(小数部分按概率)
+      room.loot.forEach(l => { for (let k = 0, n = Math.floor(LK) + (rng() < LK % 1 ? 1 : 0); k < n; k++) rolls.push(l); });
+      rolls.concat(rng() < g.perkValue('finder') / 100 ? [{ q: room.loot[0].q, p: 1 }] : []).forEach(l => {
         if (l.q === 'legend') { // 副本表里的橙色掉落项:现在是首领专属饰品
           const ui = uniqueOf(); if (!ui || rng() >= Math.max(l.p, D.uniqueRule.minP)) return;
           const p = positions && positions.length ? positions[drops.length % positions.length] : { x: D.arena.cx, y: D.arena.cy - 60 };
@@ -10751,7 +10762,7 @@ var SCN = (function () {
         <div class="ban" style="background:radial-gradient(ellipse at 50% 100%, ${bg[d.pal]})"><div class="fig" style="width:${boss.fig[0] * 0.8}px;height:${boss.fig[1] * 0.8}px">${ART.enemy(boss.art, boss.pal)}</div></div>
         <h2>${d.name}</h2><div class="lv">${d.min}–${d.max} 级 · ${d.raid ? `<b style="color:#ff9a7a" data-tip="进门时选十人或二十五人,每个首领开打前选普通 / 英雄 / 史诗。<br>团本按周存进度:杀过的首领这一周不再出现,回公会再进来接着打。<br>离重置还有 ${Math.ceil(g.weekLeft() / 60)} 分钟(按游玩时间算)">${g.raidSizeLocked(d) ? g.raidSize(d) + ' 人' : ''}团本 · 本周 ${g.raidKilled(d)} / ${d.bosses.length}</b>` : d.size + ' 人副本'}</div><p>${d.desc}</p>${trackHTML(d, null, true)}
         ${d.bosses.length > 1 && open ? '' : `<div class="rec"><b>${boss.short}</b>${kills ? ' ×' + kills : ''}</div>`}${open ? coreLoot(d) : ''}
-        ${open && d.raid && g.raidDone(d) ? `<div class="lk" style="color:#8fe07a">本周已通关 · ${Math.ceil(g.weekLeft() / 60)} 分钟后重置</div>` : open ? `<span class="hbtn${ph.length ? '' : ' dis'}" data-d="${d.id}">${d.raid && g.raidAt(d) > 0 ? '继续' : '出发'}</span>${g.heroicOpen(d) ? `<span class="hbtn red hero${ph.length ? '' : ' dis'}" data-d="${d.id}" data-h="1" data-tip="英雄难度:怪按 70 级算而且更狠,只有精英和首领掉装备(70 级紫装),还掉徽章">英雄${g.hkills[d.id] ? ' ×' + g.hkills[d.id] : ''}</span>` : ''}` : g.verLocked(d) ? `<div class="lk">🔒 ${D.versions[d.level > 60 ? 70 : 60].short}开放</div>` : `<div class="lk">🔒 打通${(d.after ? D.dungeons.find(x => x.id === d.after) : D.dungeons[i - 1]).name}后${d.raid ? '开放' : '解锁'}</div>`}</div>`;
+        ${open && d.raid && g.raidDone(d) ? `<div class="lk" style="color:#8fe07a">本周已通关 · ${Math.ceil(g.weekLeft() / 60)} 分钟后重置</div>` : open ? `<span class="hbtn${ph.length ? '' : ' dis'}" data-d="${d.id}">${d.raid && g.raidAt(d) > 0 ? '继续' : '出发'}</span>${g.heroicOpen(d) ? `<span class="hbtn red hero${ph.length ? '' : ' dis'}" data-d="${d.id}" data-h="1" data-tip="英雄难度:怪按 ${g.heroicLv(d)} 级算而且更狠,只有精英和首领掉装备(${g.heroicLv(d)} 级紫装),还掉徽章">英雄${g.hkills[d.id] ? ' ×' + g.hkills[d.id] : ''}</span>` : ''}` : g.verLocked(d) ? `<div class="lk">🔒 ${D.versions[d.level > 60 ? 70 : 60].short}开放</div>` : `<div class="lk">🔒 打通${(d.after ? D.dungeons.find(x => x.id === d.after) : D.dungeons[i - 1]).name}后${d.raid ? '开放' : '解锁'}</div>`}</div>`;
     }).join('') + '</div></div>' +
       `<div class="panel dfoot">${ph.map(h => `<div class="mh" title="${h.name}">${ART.heroHead(h.cls, h.look)}</div>`).join('')}
         <div class="tx"><b>${ph.length} / 5 · 平均 ${avg} 级</b>${warn.map(w => ` <span class="wn">⚠ ${w}</span>`).join('')}</div>
